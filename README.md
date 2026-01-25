@@ -35,11 +35,43 @@ This project fulfills the following course requirements:
 - Database schema with indexes and triggers
 - Query filtering (category, pinned status, search)
 - Sorting capabilities (by date, title)
-- Input validation and error handling
+- **Declarative validation middleware** (express-request-validator)
+- Schema-based request validation
 - API testing collection (Postman/Bruno compatible)
 - Basic responsive client UI
 - PWA app shell caching
+## 🔒 Validation Middleware
 
+This project uses **[express-request-validator](https://github.com/gueldenyildirim/express-request-validator)**, a custom zero-dependency Express middleware for declarative schema-based validation.
+
+### Features
+- **Zero dependencies** - Lightweight and secure
+- **Declarative schemas** - Define validation rules as objects
+- **Transform support** - Auto-convert types (strings to numbers, booleans)
+- **Comprehensive validators** - Type checking, length, patterns, ranges, custom validators
+- **Clean error messages** - Structured validation errors with field context
+- **Flexible options** - Partial validation, strict mode, strip unknown fields
+
+### Usage Example
+```javascript
+const { validate, schemas } = require('express-request-validator');
+
+// Using predefined schema
+app.post('/api/notes', 
+  validate(schemas.createNoteSchema), 
+  async (req, res) => {
+    // req.body is validated and transformed
+    const note = await createNote(req.body);
+    res.json({ success: true, data: note });
+  }
+);
+```
+
+### Benefits
+- **Code reduction**: Removed ~90 lines of manual validation code from server/index.js (370 → 280 lines)
+- **Consistency**: All endpoints use the same validation approach
+- **Maintainability**: Validation logic centralized in schemas
+- **Reusability**: Middleware can be used across multiple projects
 ### 🚧 In Progress Features (Phase 2)
 - User authentication and registration
 - Protected API endpoints with JWT
@@ -303,6 +335,7 @@ mini-notes-pwa/
 - **Framework:** Express.js
 - **Database:** PostgreSQL (Neon.tech cloud)
 - **Database Client:** node-postgres (pg)
+- **Validation:** express-request-validator (custom middleware)
 - **Environment:** dotenv
 
 ### Frontend
@@ -320,7 +353,8 @@ mini-notes-pwa/
 ### Implemented Features
 ✅ RESTful API with 5 CRUD endpoints  
 ✅ PostgreSQL cloud database with Neon.tech  
-✅ Input validation and error handling  
+✅ Declarative validation middleware (express-request-validator)  
+✅ Schema-based request validation with transformations  
 ✅ Query filtering and search capabilities  
 ✅ Database indexes for performance  
 ✅ Auto-updating timestamps with triggers  
