@@ -1,92 +1,115 @@
 # Mini Notes PWA
 
-A lightweight Progressive Web App for note-taking with user accounts, offline functionality, and cloud sync capabilities. This project demonstrates modern web development practices with a REST API backend, PostgreSQL database, and PWA features.
+A lightweight Progressive Web App for note-taking with offline functionality and cloud sync capabilities. This project demonstrates modern web development practices with a RESTful API backend, PostgreSQL cloud database, and PWA features.
+
+## 🎯 Project Status
+
+**Current Phase:** API Development Complete ✓  
+**Database:** PostgreSQL Cloud (Neon.tech) ✓  
+**API:** Fully scaffolded and functional ✓
 
 ## Course Requirements Mapping
 
 This project fulfills the following course requirements:
 
 - **Client**: Vite-based vanilla JavaScript PWA with offline capabilities
-- **Server**: Node.js/Express REST API with authentication and CRUD operations
-- **User Accounts**: Registration and login system with secure authentication
-- **PostgreSQL Cloud Storage**: Database hosted in the cloud (PostgreSQL on Render/Neon/Supabase - to be implemented)
-- **REST-ish API**: RESTful endpoints for authentication and notes management
+- **Server**: Node.js/Express REST API with CRUD operations ✓
+- **User Accounts**: Registration and login system (future phase)
+- **PostgreSQL Cloud Storage**: Database hosted on Neon.tech cloud ✓
+- **REST-ish API**: RESTful endpoints for notes management ✓
 - **Progressive Web App**: Installable app with manifest and service worker
-- **Offline Functionality**: Service worker caching + IndexedDB for offline CRUD with sync queue
+- **Offline Functionality**: Service worker caching + IndexedDB for offline CRUD (future phase)
+
+## 📚 Documentation
+
+- **[API Documentation](API.md)** - Complete REST API reference with examples
+- **[API Testing](tests/README.md)** - Postman/Bruno collection setup guide
+- **[Database Setup](server/db/README.md)** - PostgreSQL schema and connection guide
 
 ## Feature Map
 
-### MVP Features (Phase 1)
-- User registration and login
-- Create, read, update, delete notes
-- Basic note listing and detail view
-- PostgreSQL database (local development, cloud production)
-- RESTful API endpoints
-- PWA app shell caching (offline app structure)
-- Basic responsive UI
+### ✅ Completed Features (Phase 1)
+- RESTful API design and documentation
+- Complete CRUD operations for notes
+- PostgreSQL cloud database (Neon.tech)
+- Database schema with indexes and triggers
+- Query filtering (category, pinned status, search)
+- Sorting capabilities (by date, title)
+- Input validation and error handling
+- API testing collection (Postman/Bruno compatible)
+- Basic responsive client UI
+- PWA app shell caching
 
-### Later Features (Phase 2+)
+### 🚧 In Progress Features (Phase 2)
+- User authentication and registration
+- Protected API endpoints with JWT
+- User-specific notes
+
+### 📋 Planned Features (Phase 3+)
 - Offline CRUD with IndexedDB
-- Background sync queue for offline changes
-- Note search and filtering
-- Note categories/tags
-- Rich text formatting
-- Note sharing capabilities
-- PWA install prompt
-- Push notifications for reminders
+- BData Model
 
-## Initial Data Model
-
-### Users Table
-```sql
-CREATE TABLE users (
-  id SERIAL PRIMARY KEY,
-  username VARCHAR(50) UNIQUE NOT NULL,
-  email VARCHAR(100) UNIQUE NOT NULL,
-  password_hash VARCHAR(255) NOT NULL,
-  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
-```
-
-### Notes Table
+### Notes Table (Implemented)
 ```sql
 CREATE TABLE notes (
   id SERIAL PRIMARY KEY,
-  user_id INTEGER REFERENCES users(id) ON DELETE CASCADE,
-  title VARCHAR(200),
-  content TEXT,
+  title VARCHAR(200) NOT NULL,
+  content TEXT NOT NULL DEFAULT '',
+  category VARCHAR(50),
+  color VARCHAR(7),
+  is_pinned BOOLEAN DEFAULT FALSE,
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 ```
 
-## API Sketch
+**Features:**
+- Auto-incrementing IDs
+- Automatic timestamps
+- Trigger for auto-updating `updated_at`
+- Indexes for category, pinned status, and dates
+- Full-text search index on title and content
 
-### Authentication Endpoints
-- `POST /api/auth/register` - Register new user
-  - Body: `{ username, email, password }`
-  - Returns: `{ userId, token }`
-  
-- `POST /api/auth/login` - Login existing user
-  - Body: `{ email, password }`
-  - Returns: `{ userId, token }`
+### Users Table (For Future Use)
+```sql
+CREATE TABLE users (
+  id SERIAL PRIMARY KEY,
+  username VARCHAR(50) UNIQUE NOT NULL,
+  email VARCHAR(100) UNIQUE NOT NULL,
+  password_hash VARCHAR(255) NOT NULLe
+```sql
+CREATE Reference
 
-### Notes Endpoints
-- `GET /api/notes` - Get all notes for authenticated user
-  - Headers: `Authorization: Bearer <token>`
-  - Returns: `[{ id, title, content, created_at, updated_at }]`
+### Implemented Endpoints
+
+#### Notes Management
+- `GET /api/notes` - Get all notes with filtering and search
+  - Query params: `category`, `isPinned`, `search`, `sortBy`, `order`
+  - Returns: `{ success, data: [...], count }`
+
+- `GET /api/notes/:id` - Get single note by ID
+  - Returns: `{ success, data: {...} }`
 
 - `POST /api/notes` - Create new note
-  - Headers: `Authorization: Bearer <token>`
-  - Body: `{ title, content }`
-  - Returns: `{ id, title, content, created_at, updated_at }`
+  - Body: `{ title, content, category?, color?, isPinned? }`
+  - Returns: `{ success, data: {...}, message }`
 
-- `GET /api/notes/:id` - Get single note
-  - Headers: `Authorization: Bearer <token>`
-  - Returns: `{ id, title, content, created_at, updated_at }`
+- `PUT /api/notes/:id` - Update existing note
+  - Body: `{ title?, content?, category?, color?, isPinned? }`
+  - Returns: `{ success, data: {...}, message }`
 
-- `PUT /api/notes/:id` - Update note
-  - Headers: `Authorization: Bearer <token>`
+- `DELETE /api/notes/:id` - Delete note
+  - Returns: `{ success, message }`
+
+#### Utility
+- `GET /health` - Server health and database connectivity check
+  - Returns: `{ status: "ok", database: "connected" }`
+
+### Future Authentication Endpoints (Not Implemented)
+- `POST /api/auth/register` - Register new user
+- `POST /api/auth/login` - Login existing user
+
+For complete API documentation with request/response examples, see **[API.md](API.md)**arer <token>`
   - Body: `{ title, content }`
   - Returns: `{ id, title, content, updated_at }`
 
@@ -180,59 +203,164 @@ Create a Kanban board at: `https://github.com/YOUR_USERNAME/mini-notes-pwa/proje
     - Description: Verify all npm scripts work and apps start successfully
 
 After creating these issues, add them to the Project board in the Backlog column. Move issues #1-3 to "Done" once completed.
+Git
+- Neon.tech account (free tier) for cloud PostgreSQL
 
-## How to Run Locally
+### Quick Start
 
-### Prerequisites
-- Node.js (v18 or higher)
-- Docker and Docker Compose (for PostgreSQL)
-- Git
-
-### 1. Start PostgreSQL Database (Optional - for Phase 2)
+#### 1. Clone Repository
 ```bash
-cd db
-docker-compose up -d
+git clone <your-repo-url>
+cd mini-notes-pwa
 ```
 
-### 2. Start Server
+#### 2. Setup Database
+1. Create free account at https://neon.tech
+2. Create a new PostgreSQL project
+3. Copy the connection string
+
+#### 3. Configure Server
 ```bash
 cd server
 npm install
 cp .env.example .env
+# Edit .env and add your DATABASE_URL
+```
+
+#### 4. Run Database Migration
+```bash
+npm run migrate
+```
+This creates tables and inserts sample data.
+
+#### 5. Start Server
+```bash
 npm run dev
 ```
-Server will run on `http://localhost:3000`
+Server runs on `http://localhost:3000`
 
-### 3. Start Client
+#### 6. Start Client (Optional)
 ```bash
 # In a new terminal
 cd client
 npm install
 npm run dev
 ```
-Client will run on `http://localhost:5173`
+Client runs on `http://localhost:5173`
 
-### 4. Verify Setup
-- Open browser to `http://localhost:5173`
-- Click "Check Server Health" button
-- Should see "Server Status: ✓ Online"
+### Testing the API
 
-### Stopping Services
+#### Option 1: Using Postman/Bruno (Recommended)
+1. Install Postman (https://postman.com) or Bruno (https://usebruno.com)
+2. Import collection: `tests/mini-notes-api.postman_collection.json`
+3. Test all endpoints with pre-configured requests
+
+#### Option 2: Using curl
 ```bash
-# Stop client and server (Ctrl+C in each terminal)
+# Health check
+curl http://localhost:3000/health
 
-# Stop database
-cd db
-docker-compose down
+# Get all notes
+curl http://localhost:3000/api/notes
+
+# Create note
+curl -X POST http://localhost:3000/api/notes \
+  -H "Content-Type: application/json" \
+  -d '{"title":"Test Note","content":"This is a test"}'
+Project Structure
+
 ```
+mini-notes-pwa/
+├── client/                 # Vite PWA frontend
+│   ├── index.html
+│   ├── main.js
+│   ├── manifest.json       # PWA manifest
+│   ├── service-worker.js   # Service worker for offline
+│   └── package.json
+├── server/                 # Express API backend
+│   ├── db/
+│   │   ├── connection.js   # PostgreSQL connection pool
+│   │   ├── schema.sql      # Database schema
+│   │   ├── migrate.js      # Migration script
+│   │   └── README.md       # Database documentation
+│   ├── index.js            # API routes and server
+│   ├── .env                # Environment variables (gitignored)
+│   ├── .env.example        # Environment template
+│   └── package.json
+├── tests/                  # API testing collection
+│   ├── mini-notes-api.postman_collection.json
+│   └── README.md
+├── db/                     # Docker Compose (optional)
+│   └── docker-compose.yml
+├── API.md                  # Complete API documentation
+└── README.md               # This file
+```
+
+## Technology Stack
+
+### Backend
+- **Runtime:** Node.js
+- **Framework:** Express.js
+- **Database:** PostgreSQL (Neon.tech cloud)
+- **Database Client:** node-postgres (pg)
+- **Environment:** dotenv
+
+### Frontend
+- **Build Tool:** Vite
+- **Language:** Vanilla JavaScript
+- **PWA:** Service Worker + Web App Manifest
+
+### Development Tools
+- **API Testing:** Postman / Bruno / Insomnia
+- **Version Control:** Git + GitHub
+- **Database Hosting:** Neon.tech (free tier)
 
 ## Development Notes
 
-### Environment Variables
-Copy `.env.example` to `.env` in the server directory and adjust values as needed for local development.
+### Implemented Features
+✅ RESTful API with 5 CRUD endpoints  
+✅ PostgreSQL cloud database with Neon.tech  
+✅ Input validation and error handling  
+✅ Query filtering and search capabilities  
+✅ Database indexes for performance  
+✅ Auto-updating timestamps with triggers  
+✅ API documentation (API.md)  
+✅ API testing collection (Postman/Bruno)  
+✅ Connection pooling for scalability  
 
-### Database Connection
-PostgreSQL connection will be implemented in Phase 2 when authentication and notes CRUD are fully developed. For now, docker-compose is ready for local database setup.
+### Future Enhancements
+🔄 User authentication with JWT  
+🔄 Protected endpoints (authorization)  
+🔄 Offline functionality with IndexedDB  
+🔄 Background sync for offline changes  
+🔄 Client UI improvements  
+🔄 Deployment to production  
+
+## Submission
+
+**GitHub Repository:** [Your repository URL]
+
+**Includes:**
+- ✅ Complete source code (client + server)
+- ✅ API documentation (API.md)
+- ✅ Database schema and setup scripts
+- ✅ API testing collection
+- ✅ Comprehensive README
+- ✅ Working API with cloud database
+
+---
+
+**Project Status:** Phase 1 Complete - RESTful API Scaffolded ✓  
+**Next Phase:** User Authentication & Authoriz
+
+**Server (.env):**
+```env
+PORT=3000
+NODE_ENV=development
+DATABASE_URL=postgresql://user:pass@host/database?sslmode=verify-full
+```
+
+See `server/.env.example` for template.cation and notes CRUD are fully developed. For now, docker-compose is ready for local database setup.
 
 ### Cloud Deployment Plan
 - **Database**: PostgreSQL on Neon/Render/Supabase (free tier)

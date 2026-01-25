@@ -1,5 +1,6 @@
 const express = require('express');
 const cors = require('cors');
+const { query } = require('./db/connection');
 require('dotenv').config();
 
 const app = express();
@@ -10,8 +11,13 @@ app.use(cors());
 app.use(express.json());
 
 // Health check endpoint
-app.get('/health', (req, res) => {
-  res.json({ status: 'ok' });
+app.get('/health', async (req, res) => {
+  try {
+    await query('SELECT 1');
+    res.json({ status: 'ok', database: 'connected' });
+  } catch (error) {
+    res.json({ status: 'ok', database: 'disconnected', error: error.message });
+  }
 });
 
 // Auth routes (placeholders)
@@ -23,9 +29,338 @@ app.post('/api/auth/login', (req, res) => {
   res.status(501).json({ message: 'Login endpoint - not yet implemented' });
 });
 
-// Notes routes (placeholders)
-app.get('/api/notes', (req, res) => {
-  res.status(501).json({ message: 'Notes endpoint - not yet implemented' });
+// ============================================
+// NOTES API ENDPOINTS
+// ============================================
+
+// GET /api/notes - Get all notes with optional filtering
+app.get('/api/notes', async (req, res) => {
+  try {
+    const { category, isPinned, search, sortBy = 'created_at', order = 'desc' } = req.query;
+    
+    let queryText = 'SELECT * FROM notes WHERE 1=1';
+    const params = [];
+    let paramCount = 0;
+    
+    // Filter by category
+    if (category) {
+      paramCount++;
+      queryText += ` AND LOWER(category) = LOWER($${paramCount})`;
+      params.push(category);
+    }
+    
+    // Filter by pinned status
+    if (isPinned !== undefined) {
+      paramCount++;
+      queryText += ` AND is_pinned = $${paramCount}`;
+      params.push(isPinned === 'true');
+    }
+    
+    // Search in title and content
+    if (search) {
+      paramCount++;
+      queryText += ` AND (title ILIKE $${paramCount} OR content ILIKE $${paramCount})`;
+      params.push(`%${search}%`);
+    }
+    
+    // Sorting
+    const validSortFields = ['title', 'created_at', 'updated_at'];
+    const sortField = validSortFields.includes(sortBy) ? sortBy : 'created_at';
+    const sortOrder = order === 'asc' ? 'ASC' : 'DESC';
+    queryText += ` ORDER BY ${sortField} ${sortOrder}`;
+    
+    const result = await query(queryText, params);
+    
+    res.json({
+      success: true,
+      data: result.rows.map(row => ({
+        id: row.id,
+        title: row.title,
+        content: row.content,
+        category: row.category,
+        color: row.color,
+        isPinned: row.is_pinned,
+        createdAt: row.created_at,
+        updatedAt: row.updated_at
+      })),
+      count: result.rows.length
+    });
+  } catch (error) {
+    console.error('Error fetching notes:', error);
+    res.status(500).json({
+      success: false,
+      error: 'Failed to retrieve notes'
+    });
+  }
+});
+
+// GET /api/notes/:id - Get single note by ID
+app.get('/api/notes/:id', async (req, res) => {
+  try {
+    const noteId = parseInt(req.params.id);
+    
+    if (isNaN(noteId)) {
+      return res.status(400).json({
+        success: false,
+        error: 'Invalid note ID'
+      });
+    }
+    
+    const result = await query('SELECT * FROM notes WHERE id = $1', [noteId]);
+    
+    if (result.rows.length === 0) {
+      return res.status(404).json({
+        success: false,
+        error: 'Note not found'
+      });
+    }
+    
+    const row = result.rows[0];
+    res.json({
+      success: true,
+      data: {
+        id: row.id,
+        title: row.title,
+        content: row.content,
+        category: row.category,
+        color: row.color,
+        isPinned: row.is_pinned,
+        createdAt: row.created_at,
+        updatedAt: row.updated_at
+      }
+    });
+  } catch (error) {
+    console.error('Error fetching note:', error);
+    res.status(500).json({
+      success: false,
+      error: 'Failed to retrieve note'
+    });
+  }
+});
+
+// POST /api/notes - Create new note
+app.post('/api/notes', async (req, res) => {
+  try {
+    const { title, content, category, color, isPinned } = req.body;
+    
+    // Validation
+    if (!title || title.trim().length === 0) {
+      return res.status(400).json({
+        success: false,
+        error: 'Title is required and must be between 1-200 characters'
+      });
+    }
+    
+    if (title.length > 200) {
+      return res.status(400).json({
+        success: false,
+        error: 'Title must not exceed 200 characters'
+      });
+    }
+    
+    if (content === undefined) {
+      return res.status(400).json({
+        success: false,
+        error: 'Content is required'
+      });
+    }
+    
+    if (content.length > 10000) {
+      return res.status(400).json({
+        success: false,
+        error: 'Content must not exceed 10000 characters'
+      });
+    }
+    
+    // Validate color format if provided
+    if (color && !/^#[0-9A-Fa-f]{6}$/.test(color)) {
+      return res.status(400).json({
+        success: false,
+        error: 'Color must be in hex format (#RRGGBB)'
+      });
+    }
+    
+    // Insert into database
+    const result = await query(
+      `INSERT INTO notes (title, content, category, color, is_pinned) 
+       VALUES ($1, $2, $3, $4, $5) 
+       RETURNING *`,
+      [title.trim(), content, category || null, color || null, isPinned || false]
+    );
+    
+    const row = result.rows[0];
+    res.status(201).json({
+      success: true,
+      data: {
+        id: row.id,
+        title: row.title,
+        content: row.content,
+        category: row.category,
+        color: row.color,
+        isPinned: row.is_pinned,
+        createdAt: row.created_at,
+        updatedAt: row.updated_at
+      },
+      message: 'Note created successfully'
+    });
+  } catch (error) {
+    console.error('Error creating note:', error);
+    res.status(500).json({
+      success: false,
+      error: 'Failed to create note'
+    });
+  }
+});
+
+// PUT /api/notes/:id - Update existing note
+app.put('/api/notes/:id', async (req, res) => {
+  try {
+    const noteId = parseInt(req.params.id);
+    
+    if (isNaN(noteId)) {
+      return res.status(400).json({
+        success: false,
+        error: 'Invalid note ID'
+      });
+    }
+    
+    const { title, content, category, color, isPinned } = req.body;
+    
+    // Validate if fields are provided
+    if (title !== undefined) {
+      if (!title || title.trim().length === 0 || title.length > 200) {
+        return res.status(400).json({
+          success: false,
+          error: 'Title must be between 1-200 characters'
+        });
+      }
+    }
+    
+    if (content !== undefined && content.length > 10000) {
+      return res.status(400).json({
+        success: false,
+        error: 'Content must not exceed 10000 characters'
+      });
+    }
+    
+    if (color && !/^#[0-9A-Fa-f]{6}$/.test(color)) {
+      return res.status(400).json({
+        success: false,
+        error: 'Color must be in hex format (#RRGGBB)'
+      });
+    }
+    
+    // Build update query dynamically
+    const updates = [];
+    const params = [];
+    let paramCount = 0;
+    
+    if (title !== undefined) {
+      paramCount++;
+      updates.push(`title = $${paramCount}`);
+      params.push(title.trim());
+    }
+    if (content !== undefined) {
+      paramCount++;
+      updates.push(`content = $${paramCount}`);
+      params.push(content);
+    }
+    if (category !== undefined) {
+      paramCount++;
+      updates.push(`category = $${paramCount}`);
+      params.push(category);
+    }
+    if (color !== undefined) {
+      paramCount++;
+      updates.push(`color = $${paramCount}`);
+      params.push(color);
+    }
+    if (isPinned !== undefined) {
+      paramCount++;
+      updates.push(`is_pinned = $${paramCount}`);
+      params.push(isPinned);
+    }
+    
+    if (updates.length === 0) {
+      return res.status(400).json({
+        success: false,
+        error: 'No fields to update'
+      });
+    }
+    
+    paramCount++;
+    params.push(noteId);
+    
+    const result = await query(
+      `UPDATE notes SET ${updates.join(', ')}, updated_at = CURRENT_TIMESTAMP 
+       WHERE id = $${paramCount} 
+       RETURNING *`,
+      params
+    );
+    
+    if (result.rows.length === 0) {
+      return res.status(404).json({
+        success: false,
+        error: 'Note not found'
+      });
+    }
+    
+    const row = result.rows[0];
+    res.json({
+      success: true,
+      data: {
+        id: row.id,
+        title: row.title,
+        content: row.content,
+        category: row.category,
+        color: row.color,
+        isPinned: row.is_pinned,
+        createdAt: row.created_at,
+        updatedAt: row.updated_at
+      },
+      message: 'Note updated successfully'
+    });
+  } catch (error) {
+    console.error('Error updating note:', error);
+    res.status(500).json({
+      success: false,
+      error: 'Failed to update note'
+    });
+  }
+});
+
+// DELETE /api/notes/:id - Delete note
+app.delete('/api/notes/:id', async (req, res) => {
+  try {
+    const noteId = parseInt(req.params.id);
+    
+    if (isNaN(noteId)) {
+      return res.status(400).json({
+        success: false,
+        error: 'Invalid note ID'
+      });
+    }
+    
+    const result = await query('DELETE FROM notes WHERE id = $1 RETURNING id', [noteId]);
+    
+    if (result.rows.length === 0) {
+      return res.status(404).json({
+        success: false,
+        error: 'Note not found'
+      });
+    }
+    
+    res.json({
+      success: true,
+      message: 'Note deleted successfully'
+    });
+  } catch (error) {
+    console.error('Error deleting note:', error);
+    res.status(500).json({
+      success: false,
+      error: 'Failed to delete note'
+    });
+  }
 });
 
 // Start server
