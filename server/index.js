@@ -1,6 +1,7 @@
 const express = require('express');
 const cors = require('cors');
 const { query } = require('./db/connection');
+const { validate, schemas } = require('express-request-validator');
 require('dotenv').config();
 
 const app = express();
@@ -34,9 +35,11 @@ app.post('/api/auth/login', (req, res) => {
 // ============================================
 
 // GET /api/notes - Get all notes with optional filtering
-app.get('/api/notes', async (req, res) => {
+app.get('/api/notes', 
+  validate(schemas.noteQuerySchema, { source: 'query', strict: false }),
+  async (req, res) => {
   try {
-    const { category, isPinned, search, sortBy = 'created_at', order = 'desc' } = req.query;
+    const { category, isPinned, search, sortBy, order } = req.query;
     
     let queryText = 'SELECT * FROM notes WHERE 1=1';
     const params = [];
@@ -95,16 +98,11 @@ app.get('/api/notes', async (req, res) => {
 });
 
 // GET /api/notes/:id - Get single note by ID
-app.get('/api/notes/:id', async (req, res) => {
+app.get('/api/notes/:id',
+  validate(schemas.noteIdSchema, { source: 'params' }),
+  async (req, res) => {
   try {
-    const noteId = parseInt(req.params.id);
-    
-    if (isNaN(noteId)) {
-      return res.status(400).json({
-        success: false,
-        error: 'Invalid note ID'
-      });
-    }
+    const noteId = req.params.id;
     
     const result = await query('SELECT * FROM notes WHERE id = $1', [noteId]);
     
@@ -139,53 +137,18 @@ app.get('/api/notes/:id', async (req, res) => {
 });
 
 // POST /api/notes - Create new note
-app.post('/api/notes', async (req, res) => {
+app.post('/api/notes',
+  validate(schemas.createNoteSchema),
+  async (req, res) => {
   try {
     const { title, content, category, color, isPinned } = req.body;
     
-    // Validation
-    if (!title || title.trim().length === 0) {
-      return res.status(400).json({
-        success: false,
-        error: 'Title is required and must be between 1-200 characters'
-      });
-    }
-    
-    if (title.length > 200) {
-      return res.status(400).json({
-        success: false,
-        error: 'Title must not exceed 200 characters'
-      });
-    }
-    
-    if (content === undefined) {
-      return res.status(400).json({
-        success: false,
-        error: 'Content is required'
-      });
-    }
-    
-    if (content.length > 10000) {
-      return res.status(400).json({
-        success: false,
-        error: 'Content must not exceed 10000 characters'
-      });
-    }
-    
-    // Validate color format if provided
-    if (color && !/^#[0-9A-Fa-f]{6}$/.test(color)) {
-      return res.status(400).json({
-        success: false,
-        error: 'Color must be in hex format (#RRGGBB)'
-      });
-    }
-    
-    // Insert into database
+    // Insert into database (data already validated and transformed)
     const result = await query(
       `INSERT INTO notes (title, content, category, color, is_pinned) 
        VALUES ($1, $2, $3, $4, $5) 
        RETURNING *`,
-      [title.trim(), content, category || null, color || null, isPinned || false]
+      [title, content, category || null, color || null, isPinned || false]
     );
     
     const row = result.rows[0];
@@ -213,42 +176,13 @@ app.post('/api/notes', async (req, res) => {
 });
 
 // PUT /api/notes/:id - Update existing note
-app.put('/api/notes/:id', async (req, res) => {
+app.put('/api/notes/:id',
+  validate(schemas.noteIdSchema, { source: 'params' }),
+  validate(schemas.updateNoteSchema, { partial: true }),
+  async (req, res) => {
   try {
-    const noteId = parseInt(req.params.id);
-    
-    if (isNaN(noteId)) {
-      return res.status(400).json({
-        success: false,
-        error: 'Invalid note ID'
-      });
-    }
-    
+    const noteId = req.params.id;
     const { title, content, category, color, isPinned } = req.body;
-    
-    // Validate if fields are provided
-    if (title !== undefined) {
-      if (!title || title.trim().length === 0 || title.length > 200) {
-        return res.status(400).json({
-          success: false,
-          error: 'Title must be between 1-200 characters'
-        });
-      }
-    }
-    
-    if (content !== undefined && content.length > 10000) {
-      return res.status(400).json({
-        success: false,
-        error: 'Content must not exceed 10000 characters'
-      });
-    }
-    
-    if (color && !/^#[0-9A-Fa-f]{6}$/.test(color)) {
-      return res.status(400).json({
-        success: false,
-        error: 'Color must be in hex format (#RRGGBB)'
-      });
-    }
     
     // Build update query dynamically
     const updates = [];
@@ -258,7 +192,7 @@ app.put('/api/notes/:id', async (req, res) => {
     if (title !== undefined) {
       paramCount++;
       updates.push(`title = $${paramCount}`);
-      params.push(title.trim());
+      params.push(title);
     }
     if (content !== undefined) {
       paramCount++;
@@ -330,16 +264,11 @@ app.put('/api/notes/:id', async (req, res) => {
 });
 
 // DELETE /api/notes/:id - Delete note
-app.delete('/api/notes/:id', async (req, res) => {
+app.delete('/api/notes/:id',
+  validate(schemas.noteIdSchema, { source: 'params' }),
+  async (req, res) => {
   try {
-    const noteId = parseInt(req.params.id);
-    
-    if (isNaN(noteId)) {
-      return res.status(400).json({
-        success: false,
-        error: 'Invalid note ID'
-      });
-    }
+    const noteId = req.params.id;
     
     const result = await query('DELETE FROM notes WHERE id = $1 RETURNING id', [noteId]);
     
