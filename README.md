@@ -28,24 +28,15 @@ cd mini-notes-pwa
 cd server
 npm install
 cp .env.example .env
-# Edit .env or use the test database below
+# Add database credentials to .env (provided separately)
 npm run dev  # Server runs on http://localhost:3000
 ```
 
-### Quick Start with Test Database
+### Quick Start for Evaluators
 
-For immediate testing without database setup, use this configuration in `server/.env`:
+**Database credentials have been provided separately via email/submission platform for security.**
 
-```env
-PORT=3000
-NODE_ENV=development
-DATABASE_URL=postgresql://neondb_owner:npg_O58TxMBnvWbk@ep-ancient-credit-ago1hi4c-pooler.c-2.eu-central-1.aws.neon.tech/neondb?sslmode=verify-full
-JWT_SECRET=mini-notes-super-secret-key-change-in-production-32-chars-min
-JWT_EXPIRES_IN=15m
-JWT_REFRESH_EXPIRES_IN=7d
-```
-
-⚠️ **Note:** This is a shared test database for evaluation purposes. Data may be reset periodically.
+Copy the provided `.env` configuration to `server/.env`, then:
 
 3. **Setup Client** (in a new terminal)
 ```bash
@@ -56,10 +47,10 @@ npm run dev  # Client runs on http://localhost:5173
 
 4. **Access the app**
 - Open http://localhost:5173
-- **Use demo account:**
+- **Demo account credentials:**
   - Email: `demo@test.com`
   - Password: `Demo123!`
-- Or register your own account (data may be reset periodically)
+- Or register your own test account
 
 ### Alternative: Custom Database Setup
 
