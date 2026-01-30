@@ -19,7 +19,7 @@ A lightweight Progressive Web App for note-taking with offline functionality, us
 
 1. **Clone the repository**
 ```bash
-git clone https://github.com/[your-username]/mini-notes-pwa.git
+git clone https://github.com/Guldenyil/mini-notes-pwa.git
 cd mini-notes-pwa
 ```
 
@@ -45,7 +45,7 @@ JWT_EXPIRES_IN=15m
 JWT_REFRESH_EXPIRES_IN=7d
 ```
 
-⚠️ **Note:** This is a shared test database for evaluation purposes. Data may be modified or deleted by other users.
+⚠️ **Note:** This is a shared test database for evaluation purposes. Data may be reset periodically.
 
 3. **Setup Client** (in a new terminal)
 ```bash
@@ -56,8 +56,10 @@ npm run dev  # Client runs on http://localhost:5173
 
 4. **Access the app**
 - Open http://localhost:5173
-- Register a new account
-- Start creating notes!
+- **Use demo account:**
+  - Email: `demo@test.com`
+  - Password: `Demo123!`
+- Or register your own account (data may be reset periodically)
 
 ### Alternative: Custom Database Setup
 
