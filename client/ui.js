@@ -398,7 +398,8 @@ class UIManager {
       const data = await response.json();
       
       if (data.success) {
-        this.displayNotes(data.data);
+        this.notes = data.data; // Store notes for later use
+        this.displayNotes(this.notes);
       } else {
         throw new Error(data.error || 'Failed to load notes');
       }
@@ -425,26 +426,118 @@ class UIManager {
         <div class="note-footer">
           <span class="note-date">${new Date(note.createdAt).toLocaleDateString()}</span>
           <div class="note-actions">
-            <button class="btn-icon edit-note" data-id="${note.id}">✏️</button>
-            <button class="btn-icon delete-note" data-id="${note.id}">🗑️</button>
+            <button class="btn-icon edit-note" data-id="${note.id}" title="Edit">✏️</button>
+            <button class="btn-icon delete-note" data-id="${note.id}" title="Delete">🗑️</button>
           </div>
         </div>
       </div>
     `).join('');
 
-    // Add event listeners
-    document.querySelectorAll('.edit-note').forEach(btn => {
-      btn.addEventListener('click', () => {
-        const note = notes.find(n => n.id === parseInt(btn.dataset.id));
-        this.showNoteModal(note);
+    // Add event listeners for cards (click to view)
+    document.querySelectorAll('.note-card').forEach(card => {
+      card.addEventListener('click', (e) => {
+        console.log('Card clicked!', e.target);
+        
+        // Don't trigger if clicking on action buttons
+        if (e.target.closest('.note-actions') || e.target.closest('.btn-icon')) {
+          console.log('Clicked on button, ignoring');
+          return;
+        }
+        
+        const noteId = parseInt(card.dataset.id);
+        console.log('Opening note:', noteId);
+        const note = this.notes.find(n => n.id === noteId);
+        console.log('Found note:', note);
+        if (note) {
+          this.showNoteViewModal(note);
+        }
       });
     });
 
+    // Add event listeners for edit buttons
+    document.querySelectorAll('.edit-note').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation(); // Prevent card click
+        const note = this.notes.find(n => n.id === parseInt(btn.dataset.id));
+        if (note) {
+          this.showNoteModal(note);
+        }
+      });
+    });
+
+    // Add event listeners for delete buttons
     document.querySelectorAll('.delete-note').forEach(btn => {
-      btn.addEventListener('click', () => {
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation(); // Prevent card click
         this.deleteNote(parseInt(btn.dataset.id));
       });
     });
+  }
+
+  /**
+   * Show read-only note view modal
+   */
+  showNoteViewModal(note) {
+    const overlay = document.createElement('div');
+    overlay.className = 'modal-overlay';
+    overlay.id = 'noteViewOverlay';
+
+    overlay.innerHTML = `
+      <div class="modal-content note-view-modal">
+        <div class="modal-header">
+          <h2>${this.escapeHtml(note.title)}</h2>
+          <button class="btn-icon close-modal">✕</button>
+        </div>
+        <div class="modal-body">
+          <div class="note-view-content">${this.escapeHtml(note.content)}</div>
+          ${note.category ? `<div class="note-view-meta"><strong>Category:</strong> ${this.escapeHtml(note.category)}</div>` : ''}
+          <div class="note-view-meta">
+            <strong>Created:</strong> ${new Date(note.createdAt).toLocaleString()}
+          </div>
+          ${note.updatedAt !== note.createdAt ? `
+            <div class="note-view-meta">
+              <strong>Updated:</strong> ${new Date(note.updatedAt).toLocaleString()}
+            </div>
+          ` : ''}
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-primary edit-from-view" data-id="${note.id}">Edit Note</button>
+          <button class="btn btn-secondary close-view-modal">Close</button>
+        </div>
+      </div>
+    `;
+
+    document.body.appendChild(overlay);
+
+    // Event listeners
+    overlay.querySelector('.close-modal').addEventListener('click', () => {
+      this.hideNoteViewModal();
+    });
+
+    overlay.querySelector('.close-view-modal').addEventListener('click', () => {
+      this.hideNoteViewModal();
+    });
+
+    overlay.querySelector('.edit-from-view').addEventListener('click', () => {
+      this.hideNoteViewModal();
+      this.showNoteModal(note);
+    });
+
+    overlay.addEventListener('click', (e) => {
+      if (e.target === overlay) {
+        this.hideNoteViewModal();
+      }
+    });
+  }
+
+  /**
+   * Hide note view modal
+   */
+  hideNoteViewModal() {
+    const overlay = document.getElementById('noteViewOverlay');
+    if (overlay) {
+      overlay.remove();
+    }
   }
 
   async deleteNote(noteId) {
@@ -791,3 +884,6 @@ class UIManager {
 
 // Initialize UI
 export const uiManager = new UIManager();
+
+// Make it globally accessible for debugging
+window.uiManager = uiManager;
