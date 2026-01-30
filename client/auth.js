@@ -228,6 +228,32 @@ class AuthManager {
   }
 
   /**
+   * Make authenticated request (alias for authenticatedFetch)
+   * Used by UI components for API calls
+   */
+  async makeAuthenticatedRequest(endpoint, options = {}) {
+    // Add Content-Type header if body is present
+    if (options.body && !options.headers?.['Content-Type']) {
+      options.headers = {
+        ...options.headers,
+        'Content-Type': 'application/json'
+      };
+    }
+
+    // If endpoint already starts with /api, use base URL without /api
+    let url;
+    if (endpoint.startsWith('http')) {
+      url = endpoint;
+    } else if (endpoint.startsWith('/api')) {
+      url = `http://localhost:3000${endpoint}`;
+    } else {
+      url = `${API_URL}${endpoint}`;
+    }
+    
+    return this.authenticatedFetch(url, options);
+  }
+
+  /**
    * Delete account
    * @param {boolean} deleteNotes - Whether to delete notes or anonymize them
    */

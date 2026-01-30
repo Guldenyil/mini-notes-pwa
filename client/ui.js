@@ -63,73 +63,69 @@ class UIManager {
           <p class="subtitle">Join Mini Notes to start taking notes</p>
 
           <form id="registerForm" class="auth-form">
-            <div class="form-group">
-              <label for="username">Username</label>
-              <input 
-                type="text" 
-                id="username" 
-                name="username" 
-                required 
-                minlength="3" 
-                maxlength="30"
-                pattern="[a-zA-Z0-9_-]+"
-                placeholder="johndoe"
-              >
-              <small>3-30 characters, letters, numbers, - and _ only</small>
+            <div class="form-row">
+              <div class="form-group">
+                <label for="username">Username</label>
+                <input 
+                  type="text" 
+                  id="username" 
+                  name="username" 
+                  required 
+                  minlength="3" 
+                  maxlength="30"
+                  pattern="[a-zA-Z0-9_\\-]+"
+                  placeholder="johndoe"
+                >
+                <small>3-30 characters, letters, numbers, - and _ only</small>
+              </div>
+
+              <div class="form-group">
+                <label for="email">Email</label>
+                <input 
+                  type="email" 
+                  id="email" 
+                  name="email" 
+                  required 
+                  placeholder="you@example.com"
+                >
+              </div>
             </div>
 
-            <div class="form-group">
-              <label for="email">Email</label>
-              <input 
-                type="email" 
-                id="email" 
-                name="email" 
-                required 
-                placeholder="you@example.com"
-              >
-            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label for="password">Password</label>
+                <input 
+                  type="password" 
+                  id="password" 
+                  name="password" 
+                  required 
+                  minlength="8"
+                  placeholder="At least 8 characters"
+                >
+                <small>Minimum 8 characters</small>
+              </div>
 
-            <div class="form-group">
-              <label for="password">Password</label>
-              <input 
-                type="password" 
-                id="password" 
-                name="password" 
-                required 
-                minlength="8"
-                placeholder="At least 8 characters"
-              >
-              <small>Minimum 8 characters</small>
-            </div>
-
-            <div class="form-group">
-              <label for="passwordConfirm">Confirm Password</label>
-              <input 
-                type="password" 
-                id="passwordConfirm" 
-                name="passwordConfirm" 
-                required 
-                placeholder="Repeat your password"
-              >
+              <div class="form-group">
+                <label for="passwordConfirm">Confirm Password</label>
+                <input 
+                  type="password" 
+                  id="passwordConfirm" 
+                  name="passwordConfirm" 
+                  required 
+                  placeholder="Repeat your password"
+                >
+              </div>
             </div>
 
             <div class="tos-section">
-              <h3>Terms of Service & Privacy Policy</h3>
-              <div class="tos-content">
-                <div class="tos-links">
-                  <a href="#" id="viewTos">View Terms of Service</a> | 
-                  <a href="#" id="viewPrivacy">View Privacy Policy</a>
-                </div>
-                <div class="tos-summary">
-                  <strong>Quick Summary:</strong>
-                  <ul>
-                    <li>✓ You own your data completely</li>
-                    <li>✓ We collect minimal personal info (email, username)</li>
-                    <li>✓ We never sell or share your data</li>
-                    <li>✓ You can export or delete your data anytime</li>
-                    <li>✓ GDPR compliant with full user rights</li>
-                  </ul>
-                </div>
+              <div class="tos-summary">
+                <ul>
+                  <li>You own your data completely</li>
+                  <li>We collect minimal personal info (email, username)</li>
+                  <li>We never sell or share your data</li>
+                  <li>You can export or delete your data anytime</li>
+                  <li>GDPR compliant with full user rights</li>
+                </ul>
               </div>
               
               <div class="form-group checkbox-group">
@@ -233,49 +229,259 @@ class UIManager {
   /**
    * Show main application
    */
-  showMainApp() {
+  async showMainApp() {
     this.currentView = 'main';
     const user = authManager.user;
 
     document.body.innerHTML = `
       <div class="app-container">
         <header class="app-header">
-          <h1>Mini Notes</h1>
-          <div class="user-info">
-            <span>👤 ${user.username}</span>
-            <button id="settingsBtn" class="btn btn-secondary">Settings</button>
-            <button id="logoutBtn" class="btn btn-secondary">Logout</button>
+          <div class="header-left">
+            <h1>📝 Mini Notes</h1>
+          </div>
+          <div class="header-right">
+            <span class="user-badge">👤 ${user.username}</span>
+            <button id="settingsBtn" class="btn btn-secondary">⚙️ Settings</button>
+            <button id="logoutBtn" class="btn btn-secondary">🚪 Logout</button>
           </div>
         </header>
 
         <main class="app-main">
-          <div class="container">
-            <h2>Your Notes</h2>
-            <p>Note-taking interface coming soon...</p>
-            <p>Authentication system is now working! 🎉</p>
-            
-            <div class="placeholder-info">
-              <h3>What's Working:</h3>
-              <ul>
-                <li>✓ User registration with ToS consent</li>
-                <li>✓ User login with JWT tokens</li>
-                <li>✓ Protected API endpoints</li>
-                <li>✓ Account settings & deletion</li>
-                <li>✓ Data export functionality</li>
-                <li>✓ GDPR compliance</li>
-              </ul>
+          <div class="notes-container">
+            <div class="notes-header">
+              <h2>Your Notes</h2>
+              <button id="addNoteBtn" class="btn btn-primary">+ New Note</button>
+            </div>
+
+            <div class="notes-filters">
+              <input type="text" id="searchInput" placeholder="🔍 Search notes..." class="search-input">
+            </div>
+
+            <div id="notesGrid" class="notes-grid">
+              <div class="loading">Loading notes...</div>
             </div>
           </div>
         </main>
+
+        <!-- Note Modal -->
+        <div id="noteModal" class="modal" style="display: none;">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h3 id="modalTitle">New Note</h3>
+              <button id="closeModal" class="close-btn">&times;</button>
+            </div>
+            <div class="modal-body">
+              <input type="text" id="noteTitle" placeholder="Note title" class="note-input">
+              <textarea id="noteContent" placeholder="Write your note here..." class="note-textarea"></textarea>
+              <div class="note-options">
+                <input type="text" id="noteCategory" placeholder="Category (optional)" class="note-input-small">
+                <label class="pin-label">
+                  <input type="checkbox" id="notePinned"> 📌 Pin this note
+                </label>
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button id="cancelNote" class="btn btn-secondary">Cancel</button>
+              <button id="saveNote" class="btn btn-primary">Save Note</button>
+            </div>
+          </div>
+        </div>
       </div>
     `;
 
+    // Event listeners
     document.getElementById('settingsBtn').addEventListener('click', () => {
       window.location.hash = '#settings';
     });
+    
     document.getElementById('logoutBtn').addEventListener('click', () => {
       authManager.logout();
     });
+
+    document.getElementById('addNoteBtn').addEventListener('click', () => {
+      this.showNoteModal();
+    });
+
+    document.getElementById('closeModal').addEventListener('click', () => {
+      this.hideNoteModal();
+    });
+
+    document.getElementById('cancelNote').addEventListener('click', () => {
+      this.hideNoteModal();
+    });
+
+    document.getElementById('saveNote').addEventListener('click', () => {
+      this.saveNote();
+    });
+
+    document.getElementById('searchInput').addEventListener('input', (e) => {
+      this.searchNotes(e.target.value);
+    });
+
+    // Load notes
+    await this.loadNotes();
+  }
+
+  showNoteModal(note = null) {
+    const modal = document.getElementById('noteModal');
+    const title = document.getElementById('modalTitle');
+    const noteTitle = document.getElementById('noteTitle');
+    const noteContent = document.getElementById('noteContent');
+    const noteCategory = document.getElementById('noteCategory');
+    const notePinned = document.getElementById('notePinned');
+
+    if (note) {
+      title.textContent = 'Edit Note';
+      noteTitle.value = note.title;
+      noteContent.value = note.content;
+      noteCategory.value = note.category || '';
+      notePinned.checked = note.isPinned;
+      this.editingNoteId = note.id;
+    } else {
+      title.textContent = 'New Note';
+      noteTitle.value = '';
+      noteContent.value = '';
+      noteCategory.value = '';
+      notePinned.checked = false;
+      this.editingNoteId = null;
+    }
+
+    modal.style.display = 'flex';
+  }
+
+  hideNoteModal() {
+    document.getElementById('noteModal').style.display = 'none';
+    this.editingNoteId = null;
+  }
+
+  async saveNote() {
+    const title = document.getElementById('noteTitle').value.trim();
+    const content = document.getElementById('noteContent').value.trim();
+    const category = document.getElementById('noteCategory').value.trim();
+    const isPinned = document.getElementById('notePinned').checked;
+
+    if (!title || !content) {
+      alert('Please fill in both title and content');
+      return;
+    }
+
+    try {
+      const data = { title, content, category, isPinned };
+      
+      if (this.editingNoteId) {
+        await authManager.makeAuthenticatedRequest(`/api/notes/${this.editingNoteId}`, {
+          method: 'PUT',
+          body: JSON.stringify(data)
+        });
+      } else {
+        await authManager.makeAuthenticatedRequest('/api/notes', {
+          method: 'POST',
+          body: JSON.stringify(data)
+        });
+      }
+
+      this.hideNoteModal();
+      await this.loadNotes();
+    } catch (error) {
+      alert('Failed to save note: ' + error.message);
+    }
+  }
+
+  async loadNotes() {
+    try {
+      const response = await authManager.makeAuthenticatedRequest('/api/notes');
+      
+      if (!response.ok) {
+        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+      }
+      
+      const data = await response.json();
+      
+      if (data.success) {
+        this.displayNotes(data.data);
+      } else {
+        throw new Error(data.error || 'Failed to load notes');
+      }
+    } catch (error) {
+      console.error('Failed to load notes:', error);
+      document.getElementById('notesGrid').innerHTML = `<p class="error">Failed to load notes: ${error.message}</p>`;
+    }
+  }
+
+  displayNotes(notes) {
+    const grid = document.getElementById('notesGrid');
+    
+    if (notes.length === 0) {
+      grid.innerHTML = '<p class="no-notes">No notes yet. Click "+ New Note" to create one!</p>';
+      return;
+    }
+
+    grid.innerHTML = notes.map(note => `
+      <div class="note-card ${note.isPinned ? 'pinned' : ''}" data-id="${note.id}">
+        ${note.isPinned ? '<div class="pin-indicator">📌</div>' : ''}
+        <h3 class="note-title">${this.escapeHtml(note.title)}</h3>
+        <p class="note-content">${this.escapeHtml(note.content)}</p>
+        ${note.category ? `<span class="note-category">${this.escapeHtml(note.category)}</span>` : ''}
+        <div class="note-footer">
+          <span class="note-date">${new Date(note.createdAt).toLocaleDateString()}</span>
+          <div class="note-actions">
+            <button class="btn-icon edit-note" data-id="${note.id}">✏️</button>
+            <button class="btn-icon delete-note" data-id="${note.id}">🗑️</button>
+          </div>
+        </div>
+      </div>
+    `).join('');
+
+    // Add event listeners
+    document.querySelectorAll('.edit-note').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const note = notes.find(n => n.id === parseInt(btn.dataset.id));
+        this.showNoteModal(note);
+      });
+    });
+
+    document.querySelectorAll('.delete-note').forEach(btn => {
+      btn.addEventListener('click', () => {
+        this.deleteNote(parseInt(btn.dataset.id));
+      });
+    });
+  }
+
+  async deleteNote(noteId) {
+    if (!confirm('Are you sure you want to delete this note?')) {
+      return;
+    }
+
+    try {
+      await authManager.makeAuthenticatedRequest(`/api/notes/${noteId}`, {
+        method: 'DELETE'
+      });
+      await this.loadNotes();
+    } catch (error) {
+      alert('Failed to delete note: ' + error.message);
+    }
+  }
+
+  searchNotes(query) {
+    const cards = document.querySelectorAll('.note-card');
+    const searchLower = query.toLowerCase();
+
+    cards.forEach(card => {
+      const title = card.querySelector('.note-title').textContent.toLowerCase();
+      const content = card.querySelector('.note-content').textContent.toLowerCase();
+      
+      if (title.includes(searchLower) || content.includes(searchLower)) {
+        card.style.display = 'block';
+      } else {
+        card.style.display = 'none';
+      }
+    });
+  }
+
+  escapeHtml(text) {
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
   }
 
   /**

@@ -36,8 +36,8 @@ CREATE TABLE notes (
   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
--- Create indexes for buser_id ON notes(user_id);
-CREATE INDEX idx_notes_etter query performance
+-- Create indexes for better query performance
+CREATE INDEX idx_notes_user_id ON notes(user_id);
 CREATE INDEX idx_notes_category ON notes(category);
 CREATE INDEX idx_notes_is_pinned ON notes(is_pinned);
 CREATE INDEX idx_notes_created_at ON notes(created_at DESC);

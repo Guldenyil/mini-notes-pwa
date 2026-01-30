@@ -12,6 +12,8 @@ const pool = new Pool({
 });
 
 async function runMigration() {
+  const client = await pool.connect();
+  
   try {
     console.log('🔄 Connecting to Neon database...');
     
@@ -21,30 +23,39 @@ async function runMigration() {
     
     console.log('📝 Executing schema...');
     
-    // Execute schema
-    await pool.query(schema);
+    // Execute schema as a single transaction
+    await client.query('BEGIN');
+    await client.query(schema);
+    await client.query('COMMIT');
     
     console.log('✅ Database schema created successfully!');
-    console.log('✅ Sample data inserted!');
     
     // Verify tables
-    const result = await pool.query(`
+    const result = await client.query(`
       SELECT table_name 
       FROM information_schema.tables 
       WHERE table_schema = 'public'
+      ORDER BY table_name
     `);
     
     console.log('\n📊 Tables created:');
     result.rows.forEach(row => console.log('  - ' + row.table_name));
     
+    // Check users count
+    const usersCount = await client.query('SELECT COUNT(*) FROM users');
+    console.log(`\n👥 Users: ${usersCount.rows[0].count}`);
+    
     // Check notes count
-    const notesCount = await pool.query('SELECT COUNT(*) FROM notes');
-    console.log(`\n📝 Notes in database: ${notesCount.rows[0].count}`);
+    const notesCount = await client.query('SELECT COUNT(*) FROM notes');
+    console.log(`📝 Notes: ${notesCount.rows[0].count}`);
     
   } catch (error) {
+    await client.query('ROLLBACK');
     console.error('❌ Migration failed:', error.message);
+    console.error('Full error:', error);
     process.exit(1);
   } finally {
+    client.release();
     await pool.end();
   }
 }
