@@ -1,24 +1,69 @@
 # Mini Notes PWA
 
-A lightweight Progressive Web App for note-taking with offline functionality and cloud sync capabilities. This project demonstrates modern web development practices with a RESTful API backend, PostgreSQL cloud database, and PWA features.
+A lightweight Progressive Web App for note-taking with offline functionality, user authentication, and GDPR-compliant account management. Built with Node.js/Express backend, PostgreSQL cloud database, and vanilla JavaScript frontend.
 
 ## 🎯 Project Status
 
-**Current Phase:** API Development Complete ✓  
+**Current Phase:** User Authentication Complete ✓  
 **Database:** PostgreSQL Cloud (Neon.tech) ✓  
-**API:** Fully scaffolded and functional ✓
+**API:** Fully functional with protected endpoints ✓  
+**Auth:** JWT-based authentication with GDPR compliance ✓
+
+## 🚀 Quick Start
+
+### Prerequisites
+- Node.js 18+ 
+- npm or yarn
+
+### Installation & Running
+
+1. **Clone the repository**
+```bash
+git clone https://github.com/[your-username]/mini-notes-pwa.git
+cd mini-notes-pwa
+```
+
+2. **Setup Server**
+```bash
+cd server
+npm install
+# Copy .env.example to .env and configure DATABASE_URL and JWT_SECRET
+npm run dev  # Server runs on http://localhost:3000
+```
+
+3. **Setup Client** (in a new terminal)
+```bash
+cd client
+npm install
+npm run dev  # Client runs on http://localhost:5173
+```
+
+4. **Access the app**
+- Open http://localhost:5173
+- Register a new account
+- Start creating notes!
+
+### Environment Variables
+
+Create `server/.env` file:
+```env
+PORT=3000
+DATABASE_URL=your_neon_postgres_connection_string
+JWT_SECRET=your_secret_key_min_32_chars
+JWT_EXPIRES_IN=15m
+JWT_REFRESH_EXPIRES_IN=7d
+```
 
 ## Course Requirements Mapping
 
 This project fulfills the following course requirements:
 
-- **Client**: Vite-based vanilla JavaScript PWA with offline capabilities
+- **Client**: Vite-based vanilla JavaScript PWA with offline capabilities ✓
 - **Server**: Node.js/Express REST API with CRUD operations ✓
-- **User Accounts**: Registration and login system (future phase)
+- **User Accounts**: JWT-based registration and login system ✓
 - **PostgreSQL Cloud Storage**: Database hosted on Neon.tech cloud ✓
 - **REST-ish API**: RESTful endpoints for notes management ✓
-- **Progressive Web App**: Installable app with manifest and service worker
-- **Offline Functionality**: Service worker caching + IndexedDB for offline CRUD (future phase)
+- **Progressive Web App**: Installable app with manifest and service worker ✓
 
 ## 📚 Documentation
 
@@ -28,18 +73,35 @@ This project fulfills the following course requirements:
 
 ## Feature Map
 
-### ✅ Completed Features (Phase 1)
-- RESTful API design and documentation
-- Complete CRUD operations for notes
-- PostgreSQL cloud database (Neon.tech)
-- Database schema with indexes and triggers
-- Query filtering (category, pinned status, search)
-- Sorting capabilities (by date, title)
-- **Declarative validation middleware** (express-request-validator)
-- Schema-based request validation
-- API testing collection (Postman/Bruno compatible)
-- Basic responsive client UI
-- PWA app shell caching
+### ✅ Completed Features
+- **User Authentication**
+  - JWT-based registration and login
+  - Access tokens (15min) + Refresh tokens (7 days)
+  - Password hashing with bcrypt
+  - Rate limiting on auth endpoints
+- **Account Management (GDPR Compliant)**
+  - User data export (JSON format)
+  - Account deletion with data removal
+  - Terms of Service consent tracking
+  - Privacy Policy & ToS documents
+- **Protected Notes API**
+  - Complete CRUD operations
+  - User-specific note isolation
+  - Query filtering (category, pinned, search)
+  - Sorting capabilities
+- **Database**
+  - PostgreSQL cloud (Neon.tech)
+  - Users and Notes tables with foreign keys
+  - Automatic timestamps and triggers
+- **Modern UI**
+  - Responsive registration/login forms
+  - Settings page with account management
+  - Notes grid with search and filters
+  - Modal-based note creation/editing
+- **Security & Validation**
+  - Authorization middleware for resource access
+  - Schema-based request validation
+  - Rate limiting protection
 ## 🔒 Validation Middleware
 
 This project uses **[express-request-validator](https://github.com/gueldenyildirim/express-request-validator)**, a custom zero-dependency Express middleware for declarative schema-based validation.
