@@ -27,9 +27,25 @@ cd mini-notes-pwa
 ```bash
 cd server
 npm install
-# Copy .env.example to .env and configure DATABASE_URL and JWT_SECRET
+cp .env.example .env
+# Edit .env or use the test database below
 npm run dev  # Server runs on http://localhost:3000
 ```
+
+### Quick Start with Test Database
+
+For immediate testing without database setup, use this configuration in `server/.env`:
+
+```env
+PORT=3000
+NODE_ENV=development
+DATABASE_URL=postgresql://neondb_owner:npg_O58TxMBnvWbk@ep-ancient-credit-ago1hi4c-pooler.c-2.eu-central-1.aws.neon.tech/neondb?sslmode=verify-full
+JWT_SECRET=mini-notes-super-secret-key-change-in-production-32-chars-min
+JWT_EXPIRES_IN=15m
+JWT_REFRESH_EXPIRES_IN=7d
+```
+
+⚠️ **Note:** This is a shared test database for evaluation purposes. Data may be modified or deleted by other users.
 
 3. **Setup Client** (in a new terminal)
 ```bash
@@ -43,16 +59,14 @@ npm run dev  # Client runs on http://localhost:5173
 - Register a new account
 - Start creating notes!
 
-### Environment Variables
+### Alternative: Custom Database Setup
 
-Create `server/.env` file:
-```env
-PORT=3000
-DATABASE_URL=your_neon_postgres_connection_string
-JWT_SECRET=your_secret_key_min_32_chars
-JWT_EXPIRES_IN=15m
-JWT_REFRESH_EXPIRES_IN=7d
-```
+If you want your own database:
+1. Create free account at [Neon.tech](https://neon.tech)
+2. Create new project
+3. Copy connection string
+4. Update `DATABASE_URL` in `server/.env`
+5. Run migrations: `cd server && npm run migrate`
 
 ## Course Requirements Mapping
 
