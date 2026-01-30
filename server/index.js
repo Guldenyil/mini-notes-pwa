@@ -2,6 +2,11 @@ const express = require('express');
 const cors = require('cors');
 const { query } = require('./db/connection');
 const { validate, schemas } = require('express-request-validator');
+const { authenticate, requireAuth } = require('./middleware/auth');
+const { scopeToUser, authorizeNoteAccess } = require('./middleware/authorize');
+const { apiRateLimiter } = require('./middleware/rateLimiter');
+const authRoutes = require('./routes/auth');
+const accountRoutes = require('./routes/account');
 require('dotenv').config();
 
 const app = express();
@@ -10,6 +15,10 @@ const PORT = process.env.PORT || 3000;
 // Middleware
 app.use(cors());
 app.use(express.json());
+app.use(authenticate); // Add user context to all requests
+
+// Apply rate limiting to API routes
+app.use('/api', apiRateLimiter);
 
 // Health check endpoint
 app.get('/health', async (req, res) => {
@@ -17,32 +26,33 @@ app.get('/health', async (req, res) => {
     await query('SELECT 1');
     res.json({ status: 'ok', database: 'connected' });
   } catch (error) {
-    res.json({ status: 'ok', database: 'disconnected', error: error.message });
-  }
-});
+   ============================================
+// AUTHENTICATION & ACCOUNT ROUTES
+// ============================================
+app.use('/api/auth', authRoutes);
+app.use('/api/account', accountRoutes);
 
-// Auth routes (placeholders)
-app.post('/api/auth/register', (req, res) => {
-  res.status(501).json({ message: 'Registration endpoint - not yet implemented' });
-});
-
-app.post('/api/auth/login', (req, res) => {
-  res.status(501).json({ message: 'Login endpoint - not yet implemented' });
+// ============================================
+// NOTES API ENDPOINTS (Protected)({ message: 'Login endpoint - not yet implemented' });
 });
 
 // ============================================
 // NOTES API ENDPOINTS
 // ============================================
 
-// GET /api/notes - Get all notes with optional filtering
+// Protected: User can only see their own notes
 app.get('/api/notes', 
+  requireAuth,
+  scopeToUser,
   validate(schemas.noteQuerySchema, { source: 'query', strict: false }),
   async (req, res) => {
   try {
     const { category, isPinned, search, sortBy, order } = req.query;
+    const userId = req.scopedUserId; // Set by scopeToUser middleware
     
-    let queryText = 'SELECT * FROM notes WHERE 1=1';
-    const params = [];
+    let queryText = 'SELECT * FROM notes WHERE user_id = $1';
+    const params = [userId];
+    let paramCount = 1
     let paramCount = 0;
     
     // Filter by category
@@ -97,7 +107,10 @@ app.get('/api/notes',
   }
 });
 
-// GET /api/notes/:id - Get single note by ID
+// Protected: User can only access their own notes
+app.get('/api/notes/:id',
+  requireAuth,
+  authorizeNoteAccessGet single note by ID
 app.get('/api/notes/:id',
   validate(schemas.noteIdSchema, { source: 'params' }),
   async (req, res) => {
@@ -133,18 +146,21 @@ app.get('/api/notes/:id',
       success: false,
       error: 'Failed to retrieve note'
     });
-  }
-});
-
-// POST /api/notes - Create new note
+// Protected: Note is automatically associated with authenticated user
 app.post('/api/notes',
+  requireAuth,
   validate(schemas.createNoteSchema),
   async (req, res) => {
   try {
     const { title, content, category, color, isPinned } = req.body;
+    const userId = req.user.id;
     
-    // Insert into database (data already validated and transformed)
+    // Insert into database with user_id
     const result = await query(
+      `INSERT INTO notes (user_id, title, content, category, color, is_pinned) 
+       VALUES ($1, $2, $3, $4, $5, $6) 
+       RETURNING *`,
+      [userId, st result = await query(
       `INSERT INTO notes (title, content, category, color, is_pinned) 
        VALUES ($1, $2, $3, $4, $5) 
        RETURNING *`,
@@ -169,7 +185,10 @@ app.post('/api/notes',
   } catch (error) {
     console.error('Error creating note:', error);
     res.status(500).json({
-      success: false,
+// Protected: User can only update their own notes
+app.put('/api/notes/:id',
+  requireAuth,
+  authorizeNoteAccess
       error: 'Failed to create note'
     });
   }
@@ -254,7 +273,10 @@ app.put('/api/notes/:id',
       },
       message: 'Note updated successfully'
     });
-  } catch (error) {
+// Protected: User can only delete their own notes
+app.delete('/api/notes/:id',
+  requireAuth,
+  authorizeNoteAccess
     console.error('Error updating note:', error);
     res.status(500).json({
       success: false,

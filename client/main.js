@@ -1,42 +1,48 @@
+/**
+ * Mini Notes - Main Application Entry Point
+ * Handles service worker registration and initializes the UI
+ */
+
+import './ui.js';
+
 // Service Worker Registration
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
     navigator.serviceWorker.register('/service-worker.js')
       .then(registration => {
-        console.log('Service Worker registered:', registration);
+        console.log('✓ Service Worker registered:', registration.scope);
       })
       .catch(error => {
-        console.log('Service Worker registration failed:', error);
+        console.error('✗ Service Worker registration failed:', error);
       });
   });
 }
 
-// Health Check
-const checkHealthBtn = document.getElementById('checkHealth');
-const statusDiv = document.getElementById('status');
+// PWA Install Handler
+let deferredPrompt;
 
-async function checkHealth() {
-  try {
-    const response = await fetch('/health');
-    const data = await response.json();
-    
-    statusDiv.style.display = 'block';
-    statusDiv.className = 'status';
-    statusDiv.innerHTML = `
-      <strong>Server Status:</strong> ${data.status === 'ok' ? '✓ Online' : '✗ Error'}<br>
-      <small>Response: ${JSON.stringify(data)}</small>
-    `;
-  } catch (error) {
-    statusDiv.style.display = 'block';
-    statusDiv.className = 'status error';
-    statusDiv.innerHTML = `
-      <strong>Server Status:</strong> ✗ Offline<br>
-      <small>Error: ${error.message}</small>
-    `;
-  }
-}
+window.addEventListener('beforeinstallprompt', (e) => {
+  // Prevent the mini-infobar from appearing on mobile
+  e.preventDefault();
+  // Stash the event so it can be triggered later
+  deferredPrompt = e;
+  console.log('✓ PWA install prompt available');
+});
 
-checkHealthBtn.addEventListener('click', checkHealth);
+window.addEventListener('appinstalled', () => {
+  console.log('✓ PWA installed successfully');
+  deferredPrompt = null;
+});
 
-// Auto-check on load
-checkHealth();
+// Online/Offline Detection
+window.addEventListener('online', () => {
+  console.log('✓ Back online');
+  // You could show a notification to the user
+});
+
+window.addEventListener('offline', () => {
+  console.log('✗ Gone offline - PWA will continue to work');
+  // You could show a notification to the user
+});
+
+console.log('✓ Mini Notes initialized');

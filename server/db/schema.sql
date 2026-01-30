@@ -5,19 +5,28 @@
 DROP TABLE IF EXISTS notes CASCADE;
 DROP TABLE IF EXISTS users CASCADE;
 
--- Users table (for future authentication)
+-- Users table
 CREATE TABLE users (
   id SERIAL PRIMARY KEY,
-  username VARCHAR(50) UNIQUE NOT NULL,
-  email VARCHAR(100) UNIQUE NOT NULL,
+  username VARCHAR(30) UNIQUE NOT NULL,
+  email VARCHAR(255) UNIQUE NOT NULL,
   password_hash VARCHAR(255) NOT NULL,
+  tos_accepted_at TIMESTAMP NOT NULL,
+  tos_version_accepted VARCHAR(20) NOT NULL,
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  deleted_at TIMESTAMP NULL
 );
+
+-- Create indexes for users
+CREATE INDEX idx_users_email ON users(email);
+CREATE INDEX idx_users_username ON users(username);
+CREATE INDEX idx_users_deleted_at ON users(deleted_at) WHERE deleted_at IS NULL;
 
 -- Notes table
 CREATE TABLE notes (
   id SERIAL PRIMARY KEY,
+  user_id INTEGER REFERENCES users(id) ON DELETE CASCADE,
   title VARCHAR(200) NOT NULL,
   content TEXT NOT NULL DEFAULT '',
   category VARCHAR(50),
@@ -27,7 +36,8 @@ CREATE TABLE notes (
   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
--- Create indexes for better query performance
+-- Create indexes for buser_id ON notes(user_id);
+CREATE INDEX idx_notes_etter query performance
 CREATE INDEX idx_notes_category ON notes(category);
 CREATE INDEX idx_notes_is_pinned ON notes(is_pinned);
 CREATE INDEX idx_notes_created_at ON notes(created_at DESC);
@@ -35,14 +45,6 @@ CREATE INDEX idx_notes_updated_at ON notes(updated_at DESC);
 
 -- Create full-text search index for title and content
 CREATE INDEX idx_notes_search ON notes USING gin(to_tsvector('english', title || ' ' || content));
-
--- Insert sample data for testing
-INSERT INTO notes (title, content, category, color, is_pinned, created_at, updated_at) VALUES
-  ('Shopping List', '- Milk
-- Eggs
-- Bread', 'personal', '#FFE5B4', TRUE, '2026-01-20 10:30:00', '2026-01-20 10:30:00'),
-  ('Meeting Notes', 'Discussed project timeline and deliverables', 'work', '#E3F2FD', FALSE, '2026-01-21 14:15:00', '2026-01-21 16:45:00'),
-  ('Recipe Ideas', 'Try making:\n- Pasta carbonara\n- Chicken curry\n- Homemade pizza', 'personal', '#C8E6C9', FALSE, '2026-01-22 09:00:00', '2026-01-22 09:00:00');
 
 -- Function to automatically update updated_at timestamp
 CREATE OR REPLACE FUNCTION update_updated_at_column()
@@ -56,5 +58,11 @@ $$ language 'plpgsql';
 -- Create trigger to auto-update updated_at
 CREATE TRIGGER update_notes_updated_at 
   BEFORE UPDATE ON notes 
+  FOR EACH ROW 
+  EXECUTE FUNCTION update_updated_at_column();
+
+
+CREATE TRIGGER update_users_updated_at 
+  BEFORE UPDATE ON users 
   FOR EACH ROW 
   EXECUTE FUNCTION update_updated_at_column();
