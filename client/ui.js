@@ -11,6 +11,18 @@ class UIManager {
     this.init();
   }
 
+  /**
+   * Ensure CSS is loaded
+   */
+  ensureCSS() {
+    if (!document.querySelector('link[href="/styles.css"]')) {
+      const link = document.createElement('link');
+      link.rel = 'stylesheet';
+      link.href = '/styles.css';
+      document.head.appendChild(link);
+    }
+  }
+
   init() {
     // Check authentication state and show appropriate view
     if (authManager.isAuthenticated()) {
@@ -56,6 +68,8 @@ class UIManager {
    */
   showRegisterView() {
     this.currentView = 'register';
+    this.ensureCSS(); // Make sure CSS is loaded
+    
     document.body.innerHTML = `
       <div class="auth-container">
         <div class="auth-card">
@@ -182,6 +196,8 @@ class UIManager {
    */
   showLoginView() {
     this.currentView = 'login';
+    this.ensureCSS(); // Make sure CSS is loaded
+    
     document.body.innerHTML = `
       <div class="auth-container">
         <div class="auth-card">

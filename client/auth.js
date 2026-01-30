@@ -140,7 +140,17 @@ class AuthManager {
    */
   logout() {
     this.clearAuth();
-    window.location.reload();
+    
+    // Ensure CSS is loaded after logout
+    if (!document.querySelector('link[href="/styles.css"]')) {
+      const link = document.createElement('link');
+      link.rel = 'stylesheet';
+      link.href = '/styles.css';
+      document.head.appendChild(link);
+    }
+    
+    // Reload to login page
+    window.location.href = '/';
   }
 
   /**

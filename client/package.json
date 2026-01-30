@@ -5,6 +5,9 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
+    "dev:clean": "rm -rf node_modules/.vite && vite",
+    "kill": "lsof -ti:5173 | xargs kill -9 || true",
+    "start": "npm run kill && npm run dev:clean",
     "build": "vite build",
     "preview": "vite preview"
   },

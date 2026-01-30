@@ -42,8 +42,10 @@ Copy the provided `.env` configuration to `server/.env`, then:
 ```bash
 cd client
 npm install
-npm run dev  # Client runs on http://localhost:5173
+npm start  # Kills old process, clears cache, starts on http://localhost:5173
 ```
+
+**Tip:** Use `npm start` to automatically handle port conflicts and cache issues.
 
 4. **Access the app**
 - Open http://localhost:5173
@@ -105,6 +107,8 @@ This project fulfills the following course requirements:
   - Settings page with account management
   - Notes grid with search and filters
   - Modal-based note creation/editing
+  - Click-to-view modal for full note content
+  - Ellipsis truncation for long notes in cards
 - **Security & Validation**
   - Authorization middleware for resource access
   - Schema-based request validation
