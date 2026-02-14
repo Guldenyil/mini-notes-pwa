@@ -9,9 +9,13 @@
     "kill": "lsof -ti:5173 | xargs kill -9 || true",
     "start": "npm run kill && npm run dev:clean",
     "build": "vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "test": "vitest run",
+    "test:watch": "vitest"
   },
   "devDependencies": {
-    "vite": "^5.0.0"
+    "jsdom": "^28.0.0",
+    "vite": "^5.0.0",
+    "vitest": "^4.0.18"
   }
 }

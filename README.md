@@ -46,6 +46,9 @@ This repository now includes a separate assignment scaffold under `client/public
 - Task 4: Token persistence for scaffold user manager
   - Access token is persisted in `localStorage` for refresh-safe edit/delete flows
   - Token is cleared from storage after account deletion
+- Task 5: Lightweight UI tests for user manager
+  - `client/public/ui/user-manager.component.test.mjs` added with Vitest + JSDOM
+  - Covered flows: create token persistence, edit guard without token, delete token cleanup
 
 ### Assignment Rules Coverage (current)
 - Relative URLs: `'/api'` base path is used in scaffold API layer.
@@ -53,7 +56,7 @@ This repository now includes a separate assignment scaffold under `client/public
 - Basic UI / Logic / Data separation: implemented in scaffold modules.
 
 ### Next
-- Optional: add lightweight UI tests for `user-manager` behavior.
+- Optional: add tests for API error rendering details in each form action.
 
 ## Feature Map
 
