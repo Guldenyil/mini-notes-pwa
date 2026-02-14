@@ -1,5 +1,7 @@
 import { createUser, editUser, deleteUser } from '../logic/user-service.mjs';
 
+const ACCESS_TOKEN_STORAGE_KEY = 'mini-notes-scaffold-access-token';
+
 class UserManager extends HTMLElement {
   constructor() {
     super();
@@ -7,8 +9,31 @@ class UserManager extends HTMLElement {
   }
 
   connectedCallback() {
+    this.loadStoredToken();
     this.render();
     this.bindEvents();
+  }
+
+  loadStoredToken() {
+    try {
+      this.accessToken = localStorage.getItem(ACCESS_TOKEN_STORAGE_KEY) || '';
+    } catch (error) {
+      this.accessToken = '';
+    }
+  }
+
+  persistToken(token) {
+    this.accessToken = token || '';
+
+    try {
+      if (this.accessToken) {
+        localStorage.setItem(ACCESS_TOKEN_STORAGE_KEY, this.accessToken);
+      } else {
+        localStorage.removeItem(ACCESS_TOKEN_STORAGE_KEY);
+      }
+    } catch (error) {
+      // no-op for environments where storage is not available
+    }
   }
 
   render() {
@@ -97,7 +122,7 @@ class UserManager extends HTMLElement {
 
     try {
       const response = await createUser(payload);
-      this.accessToken = response?.accessToken || '';
+      this.persistToken(response?.accessToken || '');
       this.setStatus(JSON.stringify(response, null, 2));
       form.reset();
     } catch (error) {
@@ -147,7 +172,7 @@ class UserManager extends HTMLElement {
 
     try {
       const response = await deleteUser(this.accessToken, deleteNotes);
-      this.accessToken = '';
+      this.persistToken('');
       this.setStatus(JSON.stringify(response, null, 2));
       form.reset();
     } catch (error) {

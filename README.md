@@ -39,6 +39,13 @@ This repository now includes a separate assignment scaffold under `client/public
   - `client/public/data/api-client.mjs` (single central `fetch` call)
   - `client/public/logic/user-service.mjs` (create/edit/delete user logic)
   - `client/public/app.mjs` wired to `createUser` flow
+- Task 3: Custom web component for user CRUD
+  - `client/public/ui/user-manager.component.mjs`
+  - `client/public/app.mjs` renders `<user-manager>`
+  - Create/edit/delete actions are wired through `user-service` methods
+- Task 4: Token persistence for scaffold user manager
+  - Access token is persisted in `localStorage` for refresh-safe edit/delete flows
+  - Token is cleared from storage after account deletion
 
 ### Assignment Rules Coverage (current)
 - Relative URLs: `'/api'` base path is used in scaffold API layer.
@@ -46,8 +53,7 @@ This repository now includes a separate assignment scaffold under `client/public
 - Basic UI / Logic / Data separation: implemented in scaffold modules.
 
 ### Next
-- Implement custom web component for create/edit/delete user.
-- Connect edit/delete flows in scaffold UI using the existing service methods.
+- Optional: add lightweight UI tests for `user-manager` behavior.
 
 ## Feature Map
 
