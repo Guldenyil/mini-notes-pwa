@@ -24,7 +24,19 @@ npm install
 
 ### 2. Set Up Database
 
-#### Option A: Using Docker (Recommended)
+#### Option A: Neon PostgreSQL (Recommended)
+
+1. Create a free account at https://neon.tech
+2. Create a new PostgreSQL project
+3. Copy your connection string
+
+Set `DATABASE_URL` in `server/.env`:
+
+```env
+DATABASE_URL=postgresql://username:password@hostname.neon.tech/databasename?sslmode=verify-full
+```
+
+#### Option B: Using Docker (Local Alternative)
 
 ```bash
 cd db
@@ -36,14 +48,20 @@ This will start PostgreSQL on port 5432 with the following credentials:
 - User: `postgres`
 - Password: `postgres`
 
-#### Option B: Manual PostgreSQL Setup
+Set `DATABASE_URL` in `server/.env`:
+
+```env
+DATABASE_URL=postgresql://postgres:postgres@localhost:5432/mini_notes
+```
+
+#### Option C: Manual PostgreSQL Setup (Local Alternative)
 
 1. Create database:
 ```sql
 CREATE DATABASE mini_notes;
 ```
 
-2. Update `server/.env` with your credentials
+2. Update `server/.env` with your local credentials
 
 ### 3. Configure Environment Variables
 

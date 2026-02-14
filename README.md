@@ -291,6 +291,7 @@ cd mini-notes-pwa
 1. Create free account at https://neon.tech
 2. Create a new PostgreSQL project
 3. Copy the connection string
+4. (Optional) Use local PostgreSQL/Docker instead of Neon by setting `DATABASE_URL` accordingly
 
 #### 3. Configure Server
 ```bash
