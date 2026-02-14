@@ -65,4 +65,44 @@ describe('user-manager component', () => {
     expect(deleteUserMock).toHaveBeenCalledTimes(1);
     expect(localStorage.getItem('mini-notes-scaffold-access-token')).toBeNull();
   });
+
+  it('renders create action API error message', async () => {
+    createUserMock.mockRejectedValue(new Error('Create failed from API'));
+
+    const component = await setup();
+
+    component.querySelector('#createUserForm [name="username"]').value = 'tester';
+    component.querySelector('#createUserForm [name="email"]').value = 'tester@example.com';
+    component.querySelector('#createUserForm [name="password"]').value = 'Password123';
+
+    component.querySelector('#createUserForm').dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }));
+    await Promise.resolve();
+
+    expect(component.querySelector('#result').textContent).toContain('Error: Create failed from API');
+  });
+
+  it('renders edit action API error message', async () => {
+    localStorage.setItem('mini-notes-scaffold-access-token', 'token-123');
+    editUserMock.mockRejectedValue(new Error('Edit failed from API'));
+
+    const component = await setup();
+
+    component.querySelector('#editUserForm [name="username"]').value = 'updated-name';
+    component.querySelector('#editUserForm').dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }));
+    await Promise.resolve();
+
+    expect(component.querySelector('#result').textContent).toContain('Error: Edit failed from API');
+  });
+
+  it('renders delete action API error message', async () => {
+    localStorage.setItem('mini-notes-scaffold-access-token', 'token-123');
+    deleteUserMock.mockRejectedValue(new Error('Delete failed from API'));
+
+    const component = await setup();
+
+    component.querySelector('#deleteUserForm').dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }));
+    await Promise.resolve();
+
+    expect(component.querySelector('#result').textContent).toContain('Error: Delete failed from API');
+  });
 });

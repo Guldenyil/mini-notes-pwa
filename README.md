@@ -49,6 +49,9 @@ This repository now includes a separate assignment scaffold under `client/public
 - Task 5: Lightweight UI tests for user manager
   - `client/public/ui/user-manager.component.test.mjs` added with Vitest + JSDOM
   - Covered flows: create token persistence, edit guard without token, delete token cleanup
+- Task 6: API error rendering tests for user manager
+  - Added error-state assertions for create/edit/delete actions
+  - Vitest config excludes `dist/**` to avoid duplicate test discovery
 
 ### Assignment Rules Coverage (current)
 - Relative URLs: `'/api'` base path is used in scaffold API layer.
@@ -56,7 +59,7 @@ This repository now includes a separate assignment scaffold under `client/public
 - Basic UI / Logic / Data separation: implemented in scaffold modules.
 
 ### Next
-- Optional: add tests for API error rendering details in each form action.
+- Optional: add end-to-end browser tests for scaffold user-manager flows.
 
 ## Feature Map
 
