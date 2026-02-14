@@ -52,6 +52,9 @@ This repository now includes a separate assignment scaffold under `client/public
 - Task 6: API error rendering tests for user manager
   - Added error-state assertions for create/edit/delete actions
   - Vitest config excludes `dist/**` to avoid duplicate test discovery
+- Task 7: Data and logic layer tests
+  - `client/public/data/api-client.test.mjs` validates headers/body and error mapping
+  - `client/public/logic/user-service.test.mjs` validates payload normalization and request shaping
 
 ### Assignment Rules Coverage (current)
 - Relative URLs: `'/api'` base path is used in scaffold API layer.
