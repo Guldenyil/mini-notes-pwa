@@ -10,7 +10,7 @@
  * - Clean, reusable, testable
  */
 
-const { query } = require('../db/connection');
+import { query } from '../db/connection.js';
 
 /**
  * Check if user owns a specific note
@@ -18,7 +18,7 @@ const { query } = require('../db/connection');
  * @param {number} userId - User ID to check ownership
  * @returns {Promise<boolean>} - True if user owns the note
  */
-async function isNoteOwner(noteId, userId) {
+export async function isNoteOwner(noteId, userId) {
   try {
     const result = await query(
       'SELECT id FROM notes WHERE id = $1 AND user_id = $2',
@@ -36,7 +36,7 @@ async function isNoteOwner(noteId, userId) {
  * Verifies the user owns the note specified in req.params.id
  * Must be used after authenticate() and requireAuth()
  */
-async function authorizeNoteAccess(req, res, next) {
+export async function authorizeNoteAccess(req, res, next) {
   const noteId = req.params.id;
   const userId = req.user?.id;
 
@@ -72,7 +72,7 @@ async function authorizeNoteAccess(req, res, next) {
  * Automatically adds user_id filter to queries
  * Use for GET /api/notes to only show user's own notes
  */
-function scopeToUser(req, res, next) {
+export function scopeToUser(req, res, next) {
   if (!req.user) {
     return res.status(401).json({
       error: 'Authentication required',
@@ -90,7 +90,7 @@ function scopeToUser(req, res, next) {
  * @param {Function} checkFn - Async function that returns true if authorized
  * @param {string} errorMessage - Error message if not authorized
  */
-function authorize(checkFn, errorMessage = 'Access denied') {
+export function authorize(checkFn, errorMessage = 'Access denied') {
   return async (req, res, next) => {
     try {
       const isAuthorized = await checkFn(req);
@@ -111,9 +111,3 @@ function authorize(checkFn, errorMessage = 'Access denied') {
   };
 }
 
-module.exports = {
-  authorizeNoteAccess,
-  scopeToUser,
-  authorize,
-  isNoteOwner
-};

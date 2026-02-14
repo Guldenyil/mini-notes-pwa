@@ -3,10 +3,10 @@
  * Handles account management: deletion, data export, profile updates
  */
 
-const express = require('express');
-const { query } = require('../db/connection');
-const { requireAuth } = require('../middleware/auth');
-const { deleteAccountRateLimiter } = require('../middleware/rateLimiter');
+import express from 'express';
+import { query } from '../db/connection.js';
+import { requireAuth } from '../middleware/auth.js';
+import { deleteAccountRateLimiter } from '../middleware/rateLimiter.js';
 
 const router = express.Router();
 
@@ -296,4 +296,4 @@ router.patch('/profile',
   }
 );
 
-module.exports = router;
+export default router;

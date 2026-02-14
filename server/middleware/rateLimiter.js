@@ -6,13 +6,13 @@
  * For production with multiple servers, use Redis
  */
 
-const rateLimit = require('express-rate-limit');
+import rateLimit from 'express-rate-limit';
 
 /**
  * Rate limiter for authentication endpoints
  * 10 attempts per 15 minutes per IP (relaxed for development)
  */
-const authRateLimiter = rateLimit({
+export const authRateLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
   max: 10, // 10 requests per window
   message: {
@@ -33,7 +33,7 @@ const authRateLimiter = rateLimit({
  * Rate limiter for registration endpoint
  * 10 attempts per hour per IP (relaxed for development)
  */
-const registrationRateLimiter = rateLimit({
+export const registrationRateLimiter = rateLimit({
   windowMs: 60 * 60 * 1000, // 1 hour
   max: 10, // 10 requests per window
   message: {
@@ -49,7 +49,7 @@ const registrationRateLimiter = rateLimit({
  * Rate limiter for general API endpoints
  * 100 requests per minute per user/IP
  */
-const apiRateLimiter = rateLimit({
+export const apiRateLimiter = rateLimit({
   windowMs: 60 * 1000, // 1 minute
   max: 100, // 100 requests per window
   message: {
@@ -70,7 +70,7 @@ const apiRateLimiter = rateLimit({
  * Very restrictive to prevent accidental deletions
  * 1 attempt per hour per user
  */
-const deleteAccountRateLimiter = rateLimit({
+export const deleteAccountRateLimiter = rateLimit({
   windowMs: 60 * 60 * 1000, // 1 hour
   max: 1, // 1 request per window
   message: {
@@ -85,9 +85,3 @@ const deleteAccountRateLimiter = rateLimit({
   }
 });
 
-module.exports = {
-  authRateLimiter,
-  registrationRateLimiter,
-  apiRateLimiter,
-  deleteAccountRateLimiter
-};

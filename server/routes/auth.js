@@ -3,15 +3,18 @@
  * Handles user registration, login, and token management
  */
 
-const express = require('express');
-const bcrypt = require('bcrypt');
-const { query } = require('../db/connection');
-const { generateTokens } = require('../middleware/auth');
-const { 
-  authRateLimiter, 
-  registrationRateLimiter 
-} = require('../middleware/rateLimiter');
-const { validate } = require('express-request-validator');
+import express from 'express';
+import bcrypt from 'bcrypt';
+import jwt from 'jsonwebtoken';
+import requestValidator from 'express-request-validator';
+import { query } from '../db/connection.js';
+import { generateTokens, JWT_SECRET, verifyToken } from '../middleware/auth.js';
+import {
+  authRateLimiter,
+  registrationRateLimiter
+} from '../middleware/rateLimiter.js';
+
+const { validate } = requestValidator;
 
 const router = express.Router();
 
@@ -242,9 +245,6 @@ router.post('/refresh', async (req, res) => {
     }
 
     // Verify refresh token
-    const jwt = require('jsonwebtoken');
-    const { JWT_SECRET } = require('../middleware/auth');
-
     let decoded;
     try {
       decoded = jwt.verify(refreshToken, JWT_SECRET);
@@ -303,7 +303,6 @@ router.get('/me', async (req, res) => {
     }
 
     const token = authHeader.substring(7);
-    const { verifyToken } = require('../middleware/auth');
     const decoded = verifyToken(token);
 
     if (!decoded) {
@@ -349,4 +348,4 @@ router.get('/me', async (req, res) => {
   }
 });
 
-module.exports = router;
+export default router;

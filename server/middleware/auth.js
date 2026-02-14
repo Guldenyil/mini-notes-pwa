@@ -6,10 +6,10 @@
  * - authorize.js: Verifies WHAT they can access (authorization)
  */
 
-const jwt = require('jsonwebtoken');
+import jwt from 'jsonwebtoken';
 
-const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key-change-in-production';
-const JWT_EXPIRES_IN = process.env.JWT_EXPIRES_IN || '15m';
+export const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key-change-in-production';
+export const JWT_EXPIRES_IN = process.env.JWT_EXPIRES_IN || '15m';
 const JWT_REFRESH_EXPIRES_IN = process.env.JWT_REFRESH_EXPIRES_IN || '7d';
 
 /**
@@ -17,7 +17,7 @@ const JWT_REFRESH_EXPIRES_IN = process.env.JWT_REFRESH_EXPIRES_IN || '7d';
  * @param {Object} user - User object with id, email, username
  * @returns {Object} - { accessToken, refreshToken }
  */
-function generateTokens(user) {
+export function generateTokens(user) {
   const payload = {
     userId: user.id,
     email: user.email,
@@ -48,7 +48,7 @@ function generateTokens(user) {
  * @param {string} token - JWT token to verify
  * @returns {Object|null} - Decoded token payload or null if invalid
  */
-function verifyToken(token) {
+export function verifyToken(token) {
   try {
     return jwt.verify(token, JWT_SECRET, {
       issuer: 'mini-notes-api',
@@ -67,7 +67,7 @@ function verifyToken(token) {
  * Does NOT enforce authentication - just identifies the user
  * Use requireAuth() to enforce authentication
  */
-function authenticate(req, res, next) {
+export function authenticate(req, res, next) {
   const authHeader = req.headers.authorization;
 
   if (!authHeader || !authHeader.startsWith('Bearer ')) {
@@ -100,7 +100,7 @@ function authenticate(req, res, next) {
  * Must be used after authenticate() middleware
  * Returns 401 if user is not authenticated
  */
-function requireAuth(req, res, next) {
+export function requireAuth(req, res, next) {
   if (!req.user) {
     return res.status(401).json({
       error: 'Authentication required',
@@ -115,16 +115,7 @@ function requireAuth(req, res, next) {
  * Similar to authenticate() but more explicit in naming
  * Use when authentication is optional but useful
  */
-function optionalAuth(req, res, next) {
+export function optionalAuth(req, res, next) {
   return authenticate(req, res, next);
 }
 
-module.exports = {
-  generateTokens,
-  verifyToken,
-  authenticate,
-  requireAuth,
-  optionalAuth,
-  JWT_SECRET,
-  JWT_EXPIRES_IN
-};

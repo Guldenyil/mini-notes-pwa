@@ -2,6 +2,7 @@
   "name": "mini-notes-server",
   "version": "1.0.0",
   "description": "Mini Notes PWA - Server API",
+  "type": "module",
   "main": "index.js",
   "scripts": {
     "dev": "node index.js",

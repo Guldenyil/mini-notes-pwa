@@ -2,7 +2,7 @@
  * Validation schemas for notes API
  */
 
-const createNoteSchema = {
+export const createNoteSchema = {
   title: {
     required: true,
     minLength: 1,
@@ -32,7 +32,7 @@ const createNoteSchema = {
   }
 };
 
-const updateNoteSchema = {
+export const updateNoteSchema = {
   title: {
     required: false,
     minLength: 1,
@@ -61,7 +61,7 @@ const updateNoteSchema = {
   }
 };
 
-const noteIdSchema = {
+export const noteIdSchema = {
   id: {
     required: true,
     type: 'number',
@@ -71,7 +71,7 @@ const noteIdSchema = {
   }
 };
 
-const noteQuerySchema = {
+export const noteQuerySchema = {
   category: {
     required: false,
     maxLength: 50,
@@ -99,9 +99,3 @@ const noteQuerySchema = {
   }
 };
 
-module.exports = {
-  createNoteSchema,
-  updateNoteSchema,
-  noteIdSchema,
-  noteQuerySchema
-};

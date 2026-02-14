@@ -73,6 +73,20 @@ npm run dev
 
 Client URL: `http://localhost:5173`
 
+## Demo Account
+
+Use this account to log in quickly:
+
+- Email: `demo@test.com`
+- Password: `Demo123!`
+
+If the account does not exist in your current database, create it:
+
+```bash
+cd server
+node create-demo-account.js
+```
+
 ## Verification
 
 - Health check:

@@ -1,5 +1,5 @@
-const { Pool } = require('pg');
-require('dotenv').config();
+import { Pool } from 'pg';
+import 'dotenv/config';
 
 // PostgreSQL connection pool configuration
 const pool = new Pool({
@@ -63,7 +63,7 @@ const getClient = async () => {
   return client;
 };
 
-module.exports = {
+export {
   query,
   getClient,
   pool
