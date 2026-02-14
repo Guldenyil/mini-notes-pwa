@@ -92,7 +92,7 @@ Under the General Data Protection Regulation (GDPR), you have the following righ
 
 ### 5.1 Right of Access
 - View all data we hold about you
-- Export your data via Account Settings → Export Data
+- Export your data via Account Settings -> Export Data
 
 ### 5.2 Right to Rectification
 - Update your email or username

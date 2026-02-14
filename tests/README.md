@@ -114,11 +114,11 @@ npm run dev
 ### Testing Scenarios:
 
 **Scenario 1: Basic CRUD**
-1. Health Check → Should return `{ status: 'ok' }`
-2. Create Note → Should return 201 with created note
-3. Get All Notes → Should include the new note
-4. Update Note → Should return updated note
-5. Delete Note → Should return success message
+1. Health Check -> Should return `{ status: 'ok' }`
+2. Create Note -> Should return 201 with created note
+3. Get All Notes -> Should include the new note
+4. Update Note -> Should return updated note
+5. Delete Note -> Should return success message
 
 **Scenario 2: Filtering and Search**
 1. Create multiple notes with different categories
@@ -127,10 +127,10 @@ npm run dev
 4. Test sorting (by date, title)
 
 **Scenario 3: Edge Cases**
-1. Get non-existent note → Should return 404
-2. Create note without required fields → Should return 400
-3. Update non-existent note → Should return 404
-4. Delete non-existent note → Should return 404
+1. Get non-existent note -> Should return 404
+2. Create note without required fields -> Should return 400
+3. Update non-existent note -> Should return 404
+4. Delete non-existent note -> Should return 404
 
 ## Variables
 

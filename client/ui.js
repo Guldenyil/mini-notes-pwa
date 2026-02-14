@@ -173,14 +173,6 @@ class UIManager {
 
     // Add event listeners
     document.getElementById('registerForm').addEventListener('submit', (e) => this.handleRegister(e));
-    document.getElementById('viewTos').addEventListener('click', (e) => {
-      e.preventDefault();
-      this.showDocument('tos');
-    });
-    document.getElementById('viewPrivacy').addEventListener('click', (e) => {
-      e.preventDefault();
-      this.showDocument('privacy');
-    });
     document.getElementById('tosLink').addEventListener('click', (e) => {
       e.preventDefault();
       this.showDocument('tos');

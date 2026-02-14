@@ -2,14 +2,14 @@
 
 ## Assignment Completion Summary
 
-**Status**: ✅ **COMPLETE**
+**Status**: [Done] **COMPLETE**
 
 All requirements have been successfully implemented:
 
-✅ App can create users through API calls  
-✅ ToS and Privacy Policy documents in place  
-✅ Potential users must actively consent to ToS  
-✅ Users can retract consent and delete accounts  
+[Done] App can create users through API calls  
+[Done] ToS and Privacy Policy documents in place  
+[Done] Potential users must actively consent to ToS  
+[Done] Users can retract consent and delete accounts  
 
 ---
 
@@ -62,7 +62,7 @@ CREATE TABLE users (
 
 **Separation of Concerns:**
 ```
-Request → authenticate → requireAuth → authorize → endpoint
+Request -> authenticate -> requireAuth -> authorize -> endpoint
          (identify)    (verify)      (check)     (execute)
 ```
 
@@ -125,11 +125,11 @@ Request → authenticate → requireAuth → authorize → endpoint
 - **Consent**: Explicit acceptance required, version tracking
 
 **GDPR Compliance:**
-- Data minimization ✓
-- Purpose limitation ✓
-- Storage limitation ✓
-- Integrity and confidentiality ✓
-- Accountability ✓
+- Data minimization [Done]
+- Purpose limitation [Done]
+- Storage limitation [Done]
+- Integrity and confidentiality [Done]
+- Accountability [Done]
 
 ### 7. Terms of Service (`TERMS_OF_SERVICE.md`)
 
@@ -152,9 +152,9 @@ Request → authenticate → requireAuth → authorize → endpoint
 
 The implementation strictly follows separation of concerns:
 
-1. **Authentication Middleware** → Identifies the user (WHO)
-2. **Authorization Middleware** → Checks permissions (WHAT)
-3. **API Endpoints** → Business logic only (HOW)
+1. **Authentication Middleware** -> Identifies the user (WHO)
+2. **Authorization Middleware** -> Checks permissions (WHAT)
+3. **API Endpoints** -> Business logic only (HOW)
 
 **Benefits:**
 - Clean, testable code
@@ -174,12 +174,12 @@ The implementation strictly follows separation of concerns:
 - Cannot use without consent
 
 **User Rights:**
-1. **Right to Access** → Export data (JSON)
-2. **Right to Rectification** → Update profile
-3. **Right to Erasure** → Delete account
-4. **Right to Data Portability** → Export in standard format
-5. **Right to Object** → Can delete account anytime
-6. **Right to Withdraw Consent** → Delete account ends all processing
+1. **Right to Access** -> Export data (JSON)
+2. **Right to Rectification** -> Update profile
+3. **Right to Erasure** -> Delete account
+4. **Right to Data Portability** -> Export in standard format
+5. **Right to Object** -> Can delete account anytime
+6. **Right to Withdraw Consent** -> Delete account ends all processing
 
 ### Security Measures
 
@@ -270,7 +270,7 @@ cd client && npm run dev
    - View ToS/Privacy Policy
 
 6. **Test Account Deletion:**
-   - Settings → Delete Account
+   - Settings -> Delete Account
    - Follow confirmations
    - Choose note deletion option
 
@@ -284,35 +284,35 @@ See `SETUP_GUIDE.md` for curl commands to test API endpoints.
 
 | Requirement | Status | Implementation |
 |------------|--------|----------------|
-| Identify data to collect | ✅ | USER_DATA_DESIGN.md, minimal GDPR-compliant data |
-| Client/server account creation | ✅ | Full registration flow with validation |
-| Client/server account deletion | ✅ | Delete or anonymize notes option |
-| Data Privacy Policy | ✅ | PRIVACY_POLICY.md with GDPR compliance |
-| Terms of Service | ✅ | TERMS_OF_SERVICE.md with data ownership |
-| Create users via API | ✅ | POST /api/auth/register |
-| ToS/Privacy in place | ✅ | Both documents written and implemented |
-| Active consent required | ✅ | Explicit checkbox, version tracking |
-| Can retract consent | ✅ | Delete account with choice of data handling |
+| Identify data to collect | [Done] | USER_DATA_DESIGN.md, minimal GDPR-compliant data |
+| Client/server account creation | [Done] | Full registration flow with validation |
+| Client/server account deletion | [Done] | Delete or anonymize notes option |
+| Data Privacy Policy | [Done] | PRIVACY_POLICY.md with GDPR compliance |
+| Terms of Service | [Done] | TERMS_OF_SERVICE.md with data ownership |
+| Create users via API | [Done] | POST /api/auth/register |
+| ToS/Privacy in place | [Done] | Both documents written and implemented |
+| Active consent required | [Done] | Explicit checkbox, version tracking |
+| Can retract consent | [Done] | Delete account with choice of data handling |
 
 ---
 
 ## Design Principles Applied
 
-### Separation of Concerns ✓
+### Separation of Concerns [Done]
 API endpoints don't handle authentication or authorization. Middleware handles these concerns separately.
 
-### Privacy by Design ✓
+### Privacy by Design [Done]
 - Data minimization from the start
 - GDPR compliance built-in
 - User rights implemented, not added later
 
-### Security by Default ✓
+### Security by Default [Done]
 - Bcrypt password hashing
 - JWT token expiry
 - Rate limiting
 - Protected endpoints
 
-### User Empowerment ✓
+### User Empowerment [Done]
 - Users own their data
 - Can export at any time
 - Can delete at any time
@@ -324,16 +324,16 @@ API endpoints don't handle authentication or authorization. Middleware handles t
 
 For production deployment:
 
-1. ✅ Change JWT_SECRET to cryptographically secure random value
-2. ✅ Enable HTTPS (TLS 1.3)
-3. ✅ Configure CORS for specific domain
-4. ✅ Use strong database password
-5. ✅ Set up monitoring and logging
-6. ✅ Implement email verification
-7. ✅ Add password reset flow
-8. ✅ Consider Redis for rate limiting (multi-server)
-9. ✅ Have legal documents reviewed by counsel
-10. ✅ Set up automated backup deletion (30 days)
+1. [Done] Change JWT_SECRET to cryptographically secure random value
+2. [Done] Enable HTTPS (TLS 1.3)
+3. [Done] Configure CORS for specific domain
+4. [Done] Use strong database password
+5. [Done] Set up monitoring and logging
+6. [Done] Implement email verification
+7. [Done] Add password reset flow
+8. [Done] Consider Redis for rate limiting (multi-server)
+9. [Done] Have legal documents reviewed by counsel
+10. [Done] Set up automated backup deletion (30 days)
 
 ---
 
@@ -367,7 +367,7 @@ All code is documented, tested, and follows best practices for:
 
 ### "Have the principle of separation of concerns in mind"
 
-✅ **Implemented:**
+[Done] **Implemented:**
 - Authentication middleware (WHO) - identifies user
 - Authorization middleware (WHAT) - checks permissions  
 - Endpoints (HOW) - execute business logic
@@ -376,7 +376,7 @@ API endpoints are completely unaware of authentication details.
 
 ### "An API endpoint for retrieving a resource should not need to know about or even be concerned about access rights"
 
-✅ **Implemented:**
+[Done] **Implemented:**
 ```javascript
 // Endpoint only handles business logic
 app.get('/api/notes/:id',
@@ -392,7 +392,7 @@ app.get('/api/notes/:id',
 
 ### "The choices of authentication scheme is also important"
 
-✅ **Implemented:**
+[Done] **Implemented:**
 - **JWT tokens** chosen for stateless authentication
 - **Suitable for PWA** (stored in localStorage)
 - **Short-lived access tokens** (15 minutes)

@@ -1,119 +1,69 @@
 # Mini Notes PWA
 
-A lightweight Progressive Web App for note-taking with offline functionality, user authentication, and GDPR-compliant account management. Built with Node.js/Express backend, PostgreSQL cloud database, and vanilla JavaScript frontend.
+A lightweight Progressive Web App for note-taking with offline functionality and cloud sync capabilities. This project demonstrates modern web development practices with a RESTful API backend, PostgreSQL cloud database, and PWA features.
 
-## 🎯 Project Status
+##  Project Status
 
-**Current Phase:** User Authentication Complete ✓  
-**Database:** PostgreSQL Cloud (Neon.tech) ✓  
-**API:** Fully functional with protected endpoints ✓  
-**Auth:** JWT-based authentication with GDPR compliance ✓
-
-## 🚀 Quick Start
-
-### Prerequisites
-- Node.js 18+ 
-- npm or yarn
-
-### Installation & Running
-
-1. **Clone the repository**
-```bash
-git clone https://github.com/Guldenyil/mini-notes-pwa.git
-cd mini-notes-pwa
-```
-
-2. **Setup Server**
-```bash
-cd server
-npm install
-cp .env.example .env
-# Add database credentials to .env (provided separately)
-npm run dev  # Server runs on http://localhost:3000
-```
-
-### Quick Start for Evaluators
-
-**Database credentials have been provided separately via email/submission platform for security.**
-
-Copy the provided `.env` configuration to `server/.env`, then:
-
-3. **Setup Client** (in a new terminal)
-```bash
-cd client
-npm install
-npm start  # Kills old process, clears cache, starts on http://localhost:5173
-```
-
-**Tip:** Use `npm start` to automatically handle port conflicts and cache issues.
-
-4. **Access the app**
-- Open http://localhost:5173
-- **Demo account credentials:**
-  - Email: `demo@test.com`
-  - Password: `Demo123!`
-- Or register your own test account
-
-### Alternative: Custom Database Setup
-
-If you want your own database:
-1. Create free account at [Neon.tech](https://neon.tech)
-2. Create new project
-3. Copy connection string
-4. Update `DATABASE_URL` in `server/.env`
-5. Run migrations: `cd server && npm run migrate`
+**Current Phase:** API Development Complete [Done]  
+**Database:** PostgreSQL Cloud (Neon.tech) [Done]  
+**API:** Fully scaffolded and functional [Done]
 
 ## Course Requirements Mapping
 
 This project fulfills the following course requirements:
 
-- **Client**: Vite-based vanilla JavaScript PWA with offline capabilities ✓
-- **Server**: Node.js/Express REST API with CRUD operations ✓
-- **User Accounts**: JWT-based registration and login system ✓
-- **PostgreSQL Cloud Storage**: Database hosted on Neon.tech cloud ✓
-- **REST-ish API**: RESTful endpoints for notes management ✓
-- **Progressive Web App**: Installable app with manifest and service worker ✓
+- **Client**: Vite-based vanilla JavaScript PWA with offline capabilities
+- **Server**: Node.js/Express REST API with CRUD operations [Done]
+- **User Accounts**: Registration and login system (future phase)
+- **PostgreSQL Cloud Storage**: Database hosted on Neon.tech cloud [Done]
+- **REST-ish API**: RESTful endpoints for notes management [Done]
+- **Progressive Web App**: Installable app with manifest and service worker
+- **Offline Functionality**: Service worker caching + IndexedDB for offline CRUD (future phase)
 
-## 📚 Documentation
+##  Documentation
 
 - **[API Documentation](API.md)** - Complete REST API reference with examples
 - **[API Testing](tests/README.md)** - Postman/Bruno collection setup guide
 - **[Database Setup](server/db/README.md)** - PostgreSQL schema and connection guide
 
+##  Client Assignment Progress (Structured Start)
+
+This repository now includes a separate assignment scaffold under `client/public`.
+
+### Completed
+- Task 1: Basic scaffold added
+  - `client/public/index.html`
+  - `client/public/app.mjs`
+  - `client/public/app.css`
+- Task 2: Architecture split and API access baseline
+  - `client/public/data/api-client.mjs` (single central `fetch` call)
+  - `client/public/logic/user-service.mjs` (create/edit/delete user logic)
+  - `client/public/app.mjs` wired to `createUser` flow
+
+### Assignment Rules Coverage (current)
+- Relative URLs: `'/api'` base path is used in scaffold API layer.
+- Single fetch call: enforced in `data/api-client.mjs`.
+- Basic UI / Logic / Data separation: implemented in scaffold modules.
+
+### Next
+- Implement custom web component for create/edit/delete user.
+- Connect edit/delete flows in scaffold UI using the existing service methods.
+
 ## Feature Map
 
-### ✅ Completed Features
-- **User Authentication**
-  - JWT-based registration and login
-  - Access tokens (15min) + Refresh tokens (7 days)
-  - Password hashing with bcrypt
-  - Rate limiting on auth endpoints
-- **Account Management (GDPR Compliant)**
-  - User data export (JSON format)
-  - Account deletion with data removal
-  - Terms of Service consent tracking
-  - Privacy Policy & ToS documents
-- **Protected Notes API**
-  - Complete CRUD operations
-  - User-specific note isolation
-  - Query filtering (category, pinned, search)
-  - Sorting capabilities
-- **Database**
-  - PostgreSQL cloud (Neon.tech)
-  - Users and Notes tables with foreign keys
-  - Automatic timestamps and triggers
-- **Modern UI**
-  - Responsive registration/login forms
-  - Settings page with account management
-  - Notes grid with search and filters
-  - Modal-based note creation/editing
-  - Click-to-view modal for full note content
-  - Ellipsis truncation for long notes in cards
-- **Security & Validation**
-  - Authorization middleware for resource access
-  - Schema-based request validation
-  - Rate limiting protection
-## 🔒 Validation Middleware
+### [Done] Completed Features (Phase 1)
+- RESTful API design and documentation
+- Complete CRUD operations for notes
+- PostgreSQL cloud database (Neon.tech)
+- Database schema with indexes and triggers
+- Query filtering (category, pinned status, search)
+- Sorting capabilities (by date, title)
+- **Declarative validation middleware** (express-request-validator)
+- Schema-based request validation
+- API testing collection (Postman/Bruno compatible)
+- Basic responsive client UI
+- PWA app shell caching
+##  Validation Middleware
 
 This project uses **[express-request-validator](https://github.com/gueldenyildirim/express-request-validator)**, a custom zero-dependency Express middleware for declarative schema-based validation.
 
@@ -141,16 +91,16 @@ app.post('/api/notes',
 ```
 
 ### Benefits
-- **Code reduction**: Removed ~90 lines of manual validation code from server/index.js (370 → 280 lines)
+- **Code reduction**: Removed ~90 lines of manual validation code from server/index.js (370 -> 280 lines)
 - **Consistency**: All endpoints use the same validation approach
 - **Maintainability**: Validation logic centralized in schemas
 - **Reusability**: Middleware can be used across multiple projects
-### 🚧 In Progress Features (Phase 2)
+###  In Progress Features (Phase 2)
 - User authentication and registration
 - Protected API endpoints with JWT
 - User-specific notes
 
-### 📋 Planned Features (Phase 3+)
+###  Planned Features (Phase 3+)
 - Offline CRUD with IndexedDB
 - BData Model
 
@@ -376,29 +326,29 @@ Project Structure
 
 ```
 mini-notes-pwa/
-├── client/                 # Vite PWA frontend
-│   ├── index.html
-│   ├── main.js
-│   ├── manifest.json       # PWA manifest
-│   ├── service-worker.js   # Service worker for offline
-│   └── package.json
-├── server/                 # Express API backend
-│   ├── db/
-│   │   ├── connection.js   # PostgreSQL connection pool
-│   │   ├── schema.sql      # Database schema
-│   │   ├── migrate.js      # Migration script
-│   │   └── README.md       # Database documentation
-│   ├── index.js            # API routes and server
-│   ├── .env                # Environment variables (gitignored)
-│   ├── .env.example        # Environment template
-│   └── package.json
-├── tests/                  # API testing collection
-│   ├── mini-notes-api.postman_collection.json
-│   └── README.md
-├── db/                     # Docker Compose (optional)
-│   └── docker-compose.yml
-├── API.md                  # Complete API documentation
-└── README.md               # This file
++-- client/                 # Vite PWA frontend
+|   +-- index.html
+|   +-- main.js
+|   +-- manifest.json       # PWA manifest
+|   +-- service-worker.js   # Service worker for offline
+|   +-- package.json
++-- server/                 # Express API backend
+|   +-- db/
+|   |   +-- connection.js   # PostgreSQL connection pool
+|   |   +-- schema.sql      # Database schema
+|   |   +-- migrate.js      # Migration script
+|   |   +-- README.md       # Database documentation
+|   +-- index.js            # API routes and server
+|   +-- .env                # Environment variables (gitignored)
+|   +-- .env.example        # Environment template
+|   +-- package.json
++-- tests/                  # API testing collection
+|   +-- mini-notes-api.postman_collection.json
+|   +-- README.md
++-- db/                     # Docker Compose (optional)
+|   +-- docker-compose.yml
++-- API.md                  # Complete API documentation
++-- README.md               # This file
 ```
 
 ## Technology Stack
@@ -424,40 +374,40 @@ mini-notes-pwa/
 ## Development Notes
 
 ### Implemented Features
-✅ RESTful API with 5 CRUD endpoints  
-✅ PostgreSQL cloud database with Neon.tech  
-✅ Declarative validation middleware (express-request-validator)  
-✅ Schema-based request validation with transformations  
-✅ Query filtering and search capabilities  
-✅ Database indexes for performance  
-✅ Auto-updating timestamps with triggers  
-✅ API documentation (API.md)  
-✅ API testing collection (Postman/Bruno)  
-✅ Connection pooling for scalability  
+[Done] RESTful API with 5 CRUD endpoints  
+[Done] PostgreSQL cloud database with Neon.tech  
+[Done] Declarative validation middleware (express-request-validator)  
+[Done] Schema-based request validation with transformations  
+[Done] Query filtering and search capabilities  
+[Done] Database indexes for performance  
+[Done] Auto-updating timestamps with triggers  
+[Done] API documentation (API.md)  
+[Done] API testing collection (Postman/Bruno)  
+[Done] Connection pooling for scalability  
 
 ### Future Enhancements
-🔄 User authentication with JWT  
-🔄 Protected endpoints (authorization)  
-🔄 Offline functionality with IndexedDB  
-🔄 Background sync for offline changes  
-🔄 Client UI improvements  
-🔄 Deployment to production  
+[In Progress] User authentication with JWT  
+[In Progress] Protected endpoints (authorization)  
+[In Progress] Offline functionality with IndexedDB  
+[In Progress] Background sync for offline changes  
+[In Progress] Client UI improvements  
+[In Progress] Deployment to production  
 
 ## Submission
 
 **GitHub Repository:** [Your repository URL]
 
 **Includes:**
-- ✅ Complete source code (client + server)
-- ✅ API documentation (API.md)
-- ✅ Database schema and setup scripts
-- ✅ API testing collection
-- ✅ Comprehensive README
-- ✅ Working API with cloud database
+- [Done] Complete source code (client + server)
+- [Done] API documentation (API.md)
+- [Done] Database schema and setup scripts
+- [Done] API testing collection
+- [Done] Comprehensive README
+- [Done] Working API with cloud database
 
 ---
 
-**Project Status:** Phase 1 Complete - RESTful API Scaffolded ✓  
+**Project Status:** Phase 1 Complete - RESTful API Scaffolded [Done]  
 **Next Phase:** User Authentication & Authoriz
 
 **Server (.env):**
@@ -486,5 +436,5 @@ Repository should include:
 
 ---
 
-**Project Status:** Kickoff Complete ✓  
+**Project Status:** Kickoff Complete [Done]  
 **Next Phase:** Implement authentication and database integration

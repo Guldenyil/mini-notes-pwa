@@ -134,7 +134,7 @@ The Service is provided "AS IS" without warranties of any kind, including:
 
 ### 6.1 Your Right to Terminate
 You may delete your account at any time through:
-- Account Settings → Delete Account
+- Account Settings -> Delete Account
 - Emailing our support
 
 Upon deletion:

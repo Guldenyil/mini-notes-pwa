@@ -9,30 +9,30 @@ This document describes the architecture and API design for the request validati
 ### High-Level Design
 
 ```
-┌─────────────────┐
-│  HTTP Request   │
-└────────┬────────┘
-         │
-         ▼
-┌─────────────────────────────┐
-│  Express.js Application     │
-│                             │
-│  ┌───────────────────────┐  │
-│  │ Validation Middleware │  │
-│  │                       │  │
-│  │  1. Parse Schema      │  │
-│  │  2. Validate Fields   │  │
-│  │  3. Transform Data    │  │
-│  │  4. Handle Errors     │  │
-│  └──────┬────────────────┘  │
-│         │                   │
-│   Valid │ Invalid           │
-│         ▼         ▼          │
-│  ┌──────────┐ ┌──────────┐  │
-│  │  Route   │ │  Error   │  │
-│  │ Handler  │ │ Response │  │
-│  └──────────┘ └──────────┘  │
-└─────────────────────────────┘
++-----------------+
+|  HTTP Request   |
++--------+--------+
+         |
+         v
++-----------------------------+
+|  Express.js Application     |
+|                             |
+|  +-----------------------+  |
+|  | Validation Middleware |  |
+|  |                       |  |
+|  |  1. Parse Schema      |  |
+|  |  2. Validate Fields   |  |
+|  |  3. Transform Data    |  |
+|  |  4. Handle Errors     |  |
+|  +------+----------------+  |
+|         |                   |
+|   Valid | Invalid           |
+|         v         v          |
+|  +----------+ +----------+  |
+|  |  Route   | |  Error   |  |
+|  | Handler  | | Response |  |
+|  +----------+ +----------+  |
++-----------------------------+
 ```
 
 ### Components
@@ -280,44 +280,44 @@ const noteSchema = {
 
 ```
 1. Middleware receives request
-   ↓
+   v
 2. Extract data from req.body/query/params
-   ↓
+   v
 3. For each field in schema:
-   ├─ Check if required
-   ├─ Check type
-   ├─ Apply transformations
-   ├─ Validate constraints
-   └─ Run custom validators
-   ↓
+   +- Check if required
+   +- Check type
+   +- Apply transformations
+   +- Validate constraints
+   +- Run custom validators
+   v
 4. Collect all errors
-   ↓
+   v
 5. If errors exist:
-   └─ Return 400 with error details
-   ↓
+   +- Return 400 with error details
+   v
 6. If valid:
-   ├─ Apply defaults
-   ├─ Update req.body/query/params
-   └─ Call next()
+   +- Apply defaults
+   +- Update req.body/query/params
+   +- Call next()
 ```
 
 ## Module Structure
 
 ```
 validation-middleware/
-├── index.js              # Main entry point
-├── lib/
-│   ├── validate.js       # Core middleware factory
-│   ├── validators.js     # Individual validator functions
-│   ├── errors.js         # Error formatting utilities
-│   └── transformers.js   # Data transformation utilities
-├── schemas/
-│   └── note.js           # Predefined note schema
-├── test/
-│   ├── validate.test.js  # Middleware tests
-│   └── validators.test.js # Validator tests
-├── package.json
-└── README.md
++-- index.js              # Main entry point
++-- lib/
+|   +-- validate.js       # Core middleware factory
+|   +-- validators.js     # Individual validator functions
+|   +-- errors.js         # Error formatting utilities
+|   +-- transformers.js   # Data transformation utilities
++-- schemas/
+|   +-- note.js           # Predefined note schema
++-- test/
+|   +-- validate.test.js  # Middleware tests
+|   +-- validators.test.js # Validator tests
++-- package.json
++-- README.md
 ```
 
 ## Implementation Details
@@ -550,10 +550,10 @@ describe('Validation Middleware', () => {
 ## Summary
 
 This design provides:
-- ✅ Declarative, reusable validation schemas
-- ✅ Flexible middleware with configuration options
-- ✅ Consistent error response format
-- ✅ Good developer experience
-- ✅ Extensible architecture
-- ✅ Security best practices
-- ✅ Performance optimization
+- [Done] Declarative, reusable validation schemas
+- [Done] Flexible middleware with configuration options
+- [Done] Consistent error response format
+- [Done] Good developer experience
+- [Done] Extensible architecture
+- [Done] Security best practices
+- [Done] Performance optimization

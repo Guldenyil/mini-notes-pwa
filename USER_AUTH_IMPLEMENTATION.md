@@ -5,7 +5,7 @@ This document describes the user authentication system implemented for Mini Note
 
 ## What's Been Implemented
 
-### ✅ Backend (Server)
+### [Done] Backend (Server)
 
 #### 1. Database Schema (`server/db/schema.sql`)
 - **users table**: Stores user accounts with GDPR-compliant fields
@@ -63,7 +63,7 @@ This document describes the user authentication system implemented for Mini Note
 - `jsonwebtoken`: JWT token management
 - `express-rate-limit`: Rate limiting
 
-### ✅ Frontend (Client)
+### [Done] Frontend (Client)
 
 #### 1. Authentication Manager (`client/auth.js`)
 - Token management (localStorage persistence)
@@ -99,7 +99,7 @@ This document describes the user authentication system implemented for Mini Note
 - Service worker registration
 - PWA install handling
 
-### ✅ Legal Documents
+### [Done] Legal Documents
 
 #### 1. Privacy Policy (`PRIVACY_POLICY.md`)
 - **What we collect**: Email, username, password (hashed), notes
@@ -129,10 +129,10 @@ The implementation follows a clean separation of concerns:
 
 ```
 Request Flow:
-1. authenticate middleware → Identifies WHO (adds req.user)
-2. requireAuth middleware → Ensures user exists (401 if not)
-3. authorize middleware → Checks WHAT user can access (403 if denied)
-4. Endpoint logic → Performs the actual operation
+1. authenticate middleware -> Identifies WHO (adds req.user)
+2. requireAuth middleware -> Ensures user exists (401 if not)
+3. authorize middleware -> Checks WHAT user can access (403 if denied)
+4. Endpoint logic -> Performs the actual operation
 ```
 
 **Benefits:**
@@ -143,24 +143,24 @@ Request Flow:
 
 ## GDPR Compliance
 
-### Data Minimization ✅
+### Data Minimization [Done]
 - Only collect: email, username, password hash, notes
 - No tracking, analytics, or unnecessary personal data
 
-### Consent Management ✅
+### Consent Management [Done]
 - Explicit ToS acceptance required (checkbox)
 - Version tracking of accepted ToS
 - Re-consent on material changes
 - Cannot use without consent
 
-### User Rights ✅
+### User Rights [Done]
 1. **Right to Access**: Export data functionality
 2. **Right to Rectification**: Update profile
 3. **Right to Erasure**: Delete account
 4. **Right to Data Portability**: JSON export
 5. **Right to Object**: Can delete account anytime
 
-### Security Measures ✅
+### Security Measures [Done]
 - Bcrypt password hashing (cost 12)
 - JWT tokens with short expiry
 - Rate limiting against abuse
@@ -215,8 +215,8 @@ npm run dev
 3. Review and accept ToS/Privacy Policy
 4. Create your account
 5. You'll be logged in automatically
-6. Try Settings → Export Data
-7. Try Settings → Delete Account
+6. Try Settings -> Export Data
+7. Try Settings -> Delete Account
 
 ## API Endpoints
 

@@ -92,7 +92,7 @@ CREATE INDEX idx_users_username ON users(username);
 3. **API Endpoints** - Focus only on business logic
 
 ```
-Request → Auth Middleware → Authorization → Endpoint
+Request -> Auth Middleware -> Authorization -> Endpoint
          (Who are you?)   (Can you access?) (Do the thing)
 ```
 

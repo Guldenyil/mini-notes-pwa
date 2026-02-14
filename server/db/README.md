@@ -60,7 +60,7 @@ Start the server and check the console for connection message:
 npm run dev
 ```
 
-You should see: `✓ Connected to PostgreSQL database`
+You should see: `[Done] Connected to PostgreSQL database`
 
 ## Database Schema
 
