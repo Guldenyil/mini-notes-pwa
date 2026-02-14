@@ -66,6 +66,36 @@ describe('user-manager component', () => {
     expect(localStorage.getItem('mini-notes-scaffold-access-token')).toBeNull();
   });
 
+  it('uses persisted token for edit action after component setup', async () => {
+    localStorage.setItem('mini-notes-scaffold-access-token', 'persisted-token');
+    editUserMock.mockResolvedValue({ message: 'Profile updated' });
+
+    const component = await setup();
+
+    component.querySelector('#editUserForm [name="username"]').value = 'new-name';
+    component.querySelector('#editUserForm').dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }));
+    await Promise.resolve();
+
+    expect(editUserMock).toHaveBeenCalledTimes(1);
+    expect(editUserMock).toHaveBeenCalledWith('persisted-token', {
+      username: 'new-name',
+      email: ''
+    });
+  });
+
+  it('shows successful edit response when persisted token is valid', async () => {
+    localStorage.setItem('mini-notes-scaffold-access-token', 'persisted-token');
+    editUserMock.mockResolvedValue({ message: 'Profile updated successfully' });
+
+    const component = await setup();
+
+    component.querySelector('#editUserForm [name="username"]').value = 'updated';
+    component.querySelector('#editUserForm').dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }));
+    await Promise.resolve();
+
+    expect(component.querySelector('#result').textContent).toContain('Profile updated successfully');
+  });
+
   it('renders create action API error message', async () => {
     createUserMock.mockRejectedValue(new Error('Create failed from API'));
 

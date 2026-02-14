@@ -55,6 +55,9 @@ This repository now includes a separate assignment scaffold under `client/public
 - Task 7: Data and logic layer tests
   - `client/public/data/api-client.test.mjs` validates headers/body and error mapping
   - `client/public/logic/user-service.test.mjs` validates payload normalization and request shaping
+- Task 8: Persisted-token edit flow tests
+  - Added tests to verify stored token is loaded and used in edit requests after setup
+  - Added success-state assertion for edit action with persisted token
 
 ### Assignment Rules Coverage (current)
 - Relative URLs: `'/api'` base path is used in scaffold API layer.
