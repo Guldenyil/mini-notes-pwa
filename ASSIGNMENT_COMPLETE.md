@@ -85,7 +85,7 @@ Request -> authenticate -> requireAuth -> authorize -> endpoint
 
 ### 4. Client Changes for Account Creation
 
-#### Registration UI (`client/ui.js`)
+#### Registration UI (`client/app/ui/domains/auth-view.js`)
 - Form with username, email, password fields
 - Password confirmation
 - Input validation
@@ -96,7 +96,7 @@ Request -> authenticate -> requireAuth -> authorize -> endpoint
   - **Required checkbox:** "I have read and agree..."
   - Cannot submit without consent
 
-#### Authentication Manager (`client/auth.js`)
+#### Authentication Manager (`client/app/auth/auth-manager.js`)
 - Token management (localStorage for PWA)
 - Register, login, logout functions
 - Automatic token refresh
@@ -104,7 +104,7 @@ Request -> authenticate -> requireAuth -> authorize -> endpoint
 
 ### 5. Client Changes for Account Deletion
 
-#### Settings/Account UI (`client/ui.js`)
+#### Settings/Account UI (`client/app/ui/domains/settings-view.js`)
 - Account information display
 - **Data Export Button** - Download all data
 - **View Legal Documents** - ToS and Privacy Policy
@@ -194,8 +194,8 @@ The implementation strictly follows separation of concerns:
    - Stored in localStorage (PWA requirement)
 
 3. **Rate Limiting:**
-   - Login: 5 attempts / 15 minutes
-   - Registration: 3 attempts / hour
+   - Login: 10 attempts / 15 minutes
+   - Registration: 10 attempts / hour
    - API: 100 requests / minute
    - Account deletion: 1 / hour
 
@@ -214,10 +214,20 @@ The implementation strictly follows separation of concerns:
 - `server/middleware/rateLimiter.js` - Rate limiting
 - `server/routes/auth.js` - Authentication endpoints
 - `server/routes/account.js` - Account management endpoints
+- `server/services/auth-service.js` - Auth business logic
+- `server/services/account-service.js` - Account business logic
+- `server/repositories/auth-repository.js` - Auth persistence layer
+- `server/repositories/account-repository.js` - Account persistence layer
 
 ### New Files Created (Frontend)
-- `client/auth.js` - Authentication manager
-- `client/ui.js` - UI manager with all views
+- `client/app/auth/auth-manager.js` - Authentication manager
+- `client/app/ui/ui-manager.js` - UI orchestrator
+- `client/app/ui/domains/auth-view.js` - Auth UI domain
+- `client/app/ui/domains/notes-view.js` - Notes UI domain
+- `client/app/ui/domains/settings-view.js` - Settings UI domain
+- `client/app/ui/domains/legal-content.js` - Legal content loader
+- `client/public/legal/terms-of-service.md` - Runtime ToS asset
+- `client/public/legal/privacy-policy.md` - Runtime Privacy asset
 - `client/styles.css` - Complete styling
 
 ### New Documentation

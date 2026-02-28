@@ -12,8 +12,14 @@ export async function renderMainApp(uiManager) {
         </div>
         <div class="header-right">
           <span class="user-badge">👤 ${user.username}</span>
-          <button id="settingsBtn" class="btn btn-secondary">⚙️ Settings</button>
-          <button id="logoutBtn" class="btn btn-secondary">🚪 Logout</button>
+          <button id="settingsBtn" class="btn btn-secondary header-action-btn settings-btn">
+            <span class="header-action-icon">⚙️</span>
+            <span>Settings</span>
+          </button>
+          <button id="logoutBtn" class="btn btn-secondary header-action-btn logout-btn">
+            <span class="header-action-icon">🚪</span>
+            <span>Logout</span>
+          </button>
         </div>
       </header>
 

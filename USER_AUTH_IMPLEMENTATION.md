@@ -24,12 +24,17 @@ This document describes the user authentication system implemented for Mini Note
   - `authorizeNoteAccess()`: Verify note ownership
   - `scopeToUser()`: Scope queries to current user
 - **rateLimiter.js**: Rate limiting for security
-  - Login: 5 attempts per 15 minutes
-  - Registration: 3 attempts per hour
+  - Login: 10 attempts per 15 minutes
+  - Registration: 10 attempts per hour
   - API: 100 requests per minute
   - Account deletion: 1 per hour
 
-#### 3. Authentication Routes (`server/routes/auth.js`)
+#### 3. Service & Repository Layers (`server/services/`, `server/repositories/`)
+- **auth-service.js** / **account-service.js**: Business rules and orchestration
+- **auth-repository.js** / **account-repository.js**: SQL and persistence access
+- Route files now focus on HTTP input/output concerns only
+
+#### 4. Authentication Routes (`server/routes/auth.js`)
 - `POST /api/auth/register`: Create new account
   - Validates ToS acceptance
   - Checks username/email uniqueness
@@ -42,7 +47,7 @@ This document describes the user authentication system implemented for Mini Note
 - `POST /api/auth/refresh`: Refresh access token
 - `GET /api/auth/me`: Get current user info
 
-#### 4. Account Management Routes (`server/routes/account.js`)
+#### 5. Account Management Routes (`server/routes/account.js`)
 - `DELETE /api/account`: Delete account (GDPR Right to be Forgotten)
   - Choice: delete notes or anonymize
   - Permanent deletion within 48 hours
@@ -52,27 +57,28 @@ This document describes the user authentication system implemented for Mini Note
 - `GET /api/account/stats`: Account statistics
 - `PATCH /api/account/profile`: Update username/email
 
-#### 5. Protected Notes Endpoints (`server/index.js`)
+#### 6. Protected Notes Endpoints (`server/index.js`)
 - All notes endpoints now require authentication
 - Automatic user scoping (users only see their own notes)
 - Authorization checks for single-note operations
 - Notes automatically linked to authenticated user
 
-#### 6. Dependencies (`server/package.json`)
+#### 7. Dependencies (`server/package.json`)
 - `bcrypt`: Password hashing
 - `jsonwebtoken`: JWT token management
 - `express-rate-limit`: Rate limiting
 
 ### [Done] Frontend (Client)
 
-#### 1. Authentication Manager (`client/auth.js`)
+#### 1. Authentication Manager (`client/app/auth/auth-manager.js`)
 - Token management (localStorage persistence)
 - Register, login, logout functions
 - Automatic token refresh
 - `authenticatedFetch()`: Wrapper for authenticated API calls
 - Account deletion & data export
+- Compatibility wrapper: `client/auth.js`
 
-#### 2. UI Manager (`client/ui.js`)
+#### 2. UI Manager (`client/app/ui/ui-manager.js`)
 - **Registration View**: 
   - Form validation
   - ToS/Privacy Policy consent
@@ -87,14 +93,20 @@ This document describes the user authentication system implemented for Mini Note
   - Account deletion (with confirmations)
 - **Document Modals**: Show ToS and Privacy Policy
 
-#### 3. Styles (`client/styles.css`)
+#### 3. UI Domain Modules (`client/app/ui/domains/`)
+- `auth-view.js`: registration/login UI and handlers
+- `notes-view.js`: notes rendering and CRUD interactions
+- `settings-view.js`: settings and account actions
+- `legal-content.js`: loads legal documents from static markdown files
+
+#### 4. Styles (`client/styles.css`)
 - Complete responsive design
 - Authentication forms
 - Settings page
 - Modal dialogs
 - Mobile-friendly
 
-#### 4. Updated Entry Point (`client/main.js` & `client/index.html`)
+#### 5. Updated Entry Point (`client/main.js` & `client/index.html`)
 - Loads authentication system
 - Service worker registration
 - PWA install handling
@@ -117,7 +129,12 @@ This document describes the user authentication system implemented for Mini Note
 - **Liability limitations**: Standard service limitations
 - **Dispute resolution**: Governing law and arbitration
 
-#### 3. Design Document (`docs/USER_DATA_DESIGN.md`)
+#### 3. Runtime Legal Assets (`client/public/legal/`)
+- `terms-of-service.md`
+- `privacy-policy.md`
+- Loaded dynamically in UI instead of embedding full legal text in JS templates
+
+#### 4. Design Document (`docs/USER_DATA_DESIGN.md`)
 - Complete architecture overview
 - GDPR compliance strategy
 - Data retention policy
@@ -133,6 +150,7 @@ Request Flow:
 2. requireAuth middleware -> Ensures user exists (401 if not)
 3. authorize middleware -> Checks WHAT user can access (403 if denied)
 4. Endpoint logic -> Performs the actual operation
+5. service/repository layers -> Encapsulate business logic and persistence
 ```
 
 **Benefits:**
