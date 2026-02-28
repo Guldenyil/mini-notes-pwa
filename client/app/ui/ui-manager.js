@@ -26,7 +26,7 @@ import {
   handleDeleteAccount,
   handleExportData
 } from './domains/settings-view.js';
-import { getPrivacyContent, getTosContent } from './domains/legal-content.js';
+import { loadLegalDocument } from './domains/legal-content.js';
 import { authManager } from '../auth/auth-manager.js';
 
 class UIManager {
@@ -165,20 +165,33 @@ class UIManager {
     }, 5000);
   }
 
-  showDocument(type) {
-    const title = type === 'tos' ? 'Terms of Service' : 'Privacy Policy';
-    const content = type === 'tos' ? getTosContent() : getPrivacyContent();
+  async showDocument(type) {
+    let documentData;
+
+    try {
+      documentData = await loadLegalDocument(type);
+    } catch (error) {
+      const targetErrorId = this.currentView === 'login' ? 'loginError' : 'registerError';
+      const targetErrorElement = document.getElementById(targetErrorId);
+
+      if (targetErrorElement) {
+        this.showError(targetErrorId, error.message);
+      } else {
+        alert(error.message);
+      }
+      return;
+    }
 
     const modal = document.createElement('div');
     modal.className = 'modal';
     modal.innerHTML = `
       <div class="modal-content">
         <div class="modal-header">
-          <h2>${title}</h2>
+          <h2>${documentData.title}</h2>
           <button class="modal-close">&times;</button>
         </div>
         <div class="modal-body">
-          ${content}
+          ${documentData.content}
         </div>
         <div class="modal-footer">
           <button class="btn btn-primary close-modal">Close</button>
