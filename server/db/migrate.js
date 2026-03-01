@@ -1,25 +1,17 @@
-import { Pool } from 'pg';
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import 'dotenv/config';
+import { pool } from './connection.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-
-// Create connection pool
-const pool = new Pool({
-  connectionString: process.env.DATABASE_URL,
-  ssl: {
-    rejectUnauthorized: false
-  }
-});
 
 async function runMigration() {
   const client = await pool.connect();
   
   try {
-    console.log('🔄 Connecting to Neon database...');
+    console.log('🔄 Connecting to PostgreSQL database...');
     
     // Read schema file
     const schemaPath = path.join(__dirname, 'schema.sql');
