@@ -30,7 +30,7 @@ Recommended:
 ### 1) Clone
 
 ```bash
-git clone <your-repo-url>
+git clone https://github.com/Guldenyil/mini-notes-pwa.git
 cd mini-notes-pwa
 ```
 
@@ -144,7 +144,23 @@ npm start
 
 Notes:
 - Schema migration is idempotent and does not drop existing data.
-- Set `DATABASE_URL` in Render environment variables.
+- Set these Render environment variables:
+  - `DATABASE_URL`
+  - `JWT_SECRET`
+  - `NODE_ENV=production`
+  - `JWT_EXPIRES_IN=15m`
+  - `JWT_REFRESH_EXPIRES_IN=7d`
+  - `CORS_ORIGIN` (your client URL, or `http://localhost:5173` for local testing)
+
+## Quick Smoke Test (API)
+
+```bash
+curl -X POST http://localhost:3000/api/auth/login \
+  -H "Content-Type: application/json" \
+  -d '{"email":"demo@test.com","password":"Demo123!"}'
+```
+
+Expected: HTTP `200` with access/refresh tokens.
 
 ## Notes for Evaluator
 
