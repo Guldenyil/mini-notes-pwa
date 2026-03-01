@@ -11,7 +11,43 @@ import notesRoutes from './routes/notes.js';
 const app = express();
 const port = process.env.PORT || 3000;
 
-app.use(cors());
+function getAllowedOrigins() {
+  const configuredOrigins = (process.env.CORS_ORIGIN || '')
+    .split(',')
+    .map((origin) => origin.trim())
+    .filter(Boolean);
+
+  if (configuredOrigins.length > 0) {
+    return configuredOrigins;
+  }
+
+  if (process.env.NODE_ENV === 'production') {
+    return [];
+  }
+
+  return ['http://localhost:5173'];
+}
+
+const allowedOrigins = getAllowedOrigins();
+const corsOptions = {
+  origin(origin, callback) {
+    if (!origin) {
+      callback(null, true);
+      return;
+    }
+
+    if (allowedOrigins.includes(origin)) {
+      callback(null, true);
+      return;
+    }
+
+    callback(new Error('Not allowed by CORS'));
+  },
+  methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+};
+
+app.use(cors(corsOptions));
 app.use(express.json());
 app.use(authenticate);
 
@@ -29,6 +65,15 @@ app.get('/health', async (req, res) => {
 app.use('/api/auth', authRoutes);
 app.use('/api/account', accountRoutes);
 app.use('/api/notes', notesRoutes);
+
+app.use((error, req, res, next) => {
+  if (error?.message === 'Not allowed by CORS') {
+    res.status(403).json({ message: 'CORS origin not allowed' });
+    return;
+  }
+
+  next(error);
+});
 
 app.listen(port, () => {
   console.log(`Server running on http://localhost:${port}`);

@@ -47,6 +47,13 @@ Open `server/.env` and set:
 ```env
 DATABASE_URL=postgresql://username:password@hostname.neon.tech/databasename?sslmode=verify-full
 JWT_SECRET=your-strong-random-secret-min-32-chars
+CORS_ORIGIN=http://localhost:5173
+```
+
+For production deployment, set `CORS_ORIGIN` to your deployed client URL (or a comma-separated list):
+
+```env
+CORS_ORIGIN=https://your-client.onrender.com
 ```
 
 ### 3) Run migration
@@ -142,3 +149,4 @@ Notes:
   - `API.md`
   - `USER_AUTH_IMPLEMENTATION.md`
   - `docs/TASK5_RENDER_WEB_SERVICE_SETUP.md`
+  - `docs/TASK7_CORS_AUTH_VALIDATION.md`
