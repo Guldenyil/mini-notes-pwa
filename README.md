@@ -130,3 +130,4 @@ Notes:
   - `SETUP_GUIDE.md`
   - `API.md`
   - `USER_AUTH_IMPLEMENTATION.md`
+  - `docs/TASK5_RENDER_WEB_SERVICE_SETUP.md`
