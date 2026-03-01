@@ -73,6 +73,17 @@ npm run dev
 
 Client URL: `http://localhost:5173`
 
+Client API URL configuration:
+
+- Local development: keep `client/.env` empty (defaults to `http://localhost:3000`)
+- Production/preview: set `VITE_API_URL` to your deployed API origin
+
+Example:
+
+```env
+VITE_API_URL=https://your-render-api.onrender.com
+```
+
 ## Demo Account
 
 Use this account to log in quickly:

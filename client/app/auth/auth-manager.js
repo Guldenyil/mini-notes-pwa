@@ -3,7 +3,35 @@
  * Handles user authentication, token management, and session state
  */
 
-const API_URL = 'http://localhost:3000/api';
+const API_ORIGIN = (import.meta.env.VITE_API_URL || '').replace(/\/$/, '');
+const LOCAL_ORIGIN = 'http://localhost:3000';
+
+function resolveApiBaseUrl() {
+  if (API_ORIGIN) {
+    return `${API_ORIGIN}/api`;
+  }
+
+  if (import.meta.env.DEV) {
+    return `${LOCAL_ORIGIN}/api`;
+  }
+
+  return '/api';
+}
+
+function resolveApiOrigin() {
+  if (API_ORIGIN) {
+    return API_ORIGIN;
+  }
+
+  if (import.meta.env.DEV) {
+    return LOCAL_ORIGIN;
+  }
+
+  return '';
+}
+
+const API_URL = resolveApiBaseUrl();
+const API_ORIGIN_URL = resolveApiOrigin();
 
 class AuthManager {
   constructor() {
@@ -247,7 +275,7 @@ class AuthManager {
     if (endpoint.startsWith('http')) {
       url = endpoint;
     } else if (endpoint.startsWith('/api')) {
-      url = `http://localhost:3000${endpoint}`;
+      url = API_ORIGIN_URL ? `${API_ORIGIN_URL}${endpoint}` : endpoint;
     } else {
       url = `${API_URL}${endpoint}`;
     }
