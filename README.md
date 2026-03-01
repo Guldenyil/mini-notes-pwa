@@ -109,6 +109,20 @@ npm test
 npm run build
 ```
 
+## Render Migration Strategy
+
+For Render deployment, run migrations as part of deploy before starting the API:
+
+```bash
+cd server
+npm run migrate:deploy
+npm start
+```
+
+Notes:
+- Schema migration is idempotent and does not drop existing data.
+- Set `DATABASE_URL` in Render environment variables.
+
 ## Notes for Evaluator
 
 - If Neon is not available, local PostgreSQL can be used by setting `DATABASE_URL` to local credentials.
