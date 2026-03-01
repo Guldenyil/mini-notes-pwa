@@ -34,7 +34,7 @@ Project includes `render.yaml` at repository root:
 5. Verify health endpoint:
 
 ```bash
-curl https://<your-render-service-url>/health
+curl https://mini-notes-api.onrender.com/health
 ```
 
 Expected response:

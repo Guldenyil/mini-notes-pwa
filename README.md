@@ -88,7 +88,7 @@ Client API URL configuration:
 Example:
 
 ```env
-VITE_API_URL=https://your-render-api.onrender.com
+VITE_API_URL=https://mini-notes-api.onrender.com
 ```
 
 ## Demo Account
@@ -116,6 +116,11 @@ curl http://localhost:3000/health
 Expected response includes:
 - `status: ok`
 - `database: connected`
+
+## Live Deployment
+
+- API Base URL: `https://mini-notes-api.onrender.com/api`
+- Health URL: `https://mini-notes-api.onrender.com/health`
 
 ## Test Commands
 

@@ -364,6 +364,10 @@ For production deployment:
 
 Submit this GitHub repository URL with your assignment.
 
+- GitHub Repository: https://github.com/Guldenyil/mini-notes-pwa
+- Live API URL: https://mini-notes-api.onrender.com/api
+- Health Check: https://mini-notes-api.onrender.com/health
+
 All code is documented, tested, and follows best practices for:
 - GDPR compliance
 - Security
@@ -425,7 +429,7 @@ This assignment demonstrates understanding of:
 
 All requirements are met and the application is ready for submission.
 
-**Repository URL:** [Your GitHub URL]
+**Repository URL:** https://github.com/Guldenyil/mini-notes-pwa
 
 ---
 
