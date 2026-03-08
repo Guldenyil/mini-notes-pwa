@@ -5,6 +5,7 @@ export function renderSettingsView(uiManager) {
   uiManager.currentView = 'settings';
   const user = authManager.user;
   const currentLocale = getCurrentLocale();
+  const displayUsername = formatDisplayUsername(user.username);
 
   document.body.innerHTML = `
     <div class="app-container">
@@ -33,7 +34,7 @@ export function renderSettingsView(uiManager) {
           <section class="settings-section">
             <h2>${t('account.ui.accountInformation')}</h2>
             <div class="info-item">
-              <strong>${t('account.ui.username')}</strong> ${user.username}
+              <strong>${t('account.ui.username')}</strong> ${displayUsername}
             </div>
             <div class="info-item">
               <strong>${t('account.ui.email')}</strong> ${user.email}
@@ -132,4 +133,13 @@ export async function handleDeleteAccount() {
   }
 
   alert(t('account.errors.deletionFailed', { message: result.error }));
+}
+
+function formatDisplayUsername(username) {
+  const safeUsername = String(username || '').trim();
+  if (!safeUsername) {
+    return '';
+  }
+
+  return safeUsername.charAt(0).toUpperCase() + safeUsername.slice(1);
 }

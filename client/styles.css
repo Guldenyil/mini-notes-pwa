@@ -1071,6 +1071,54 @@ body {
   color: #334155;
 }
 
+.user-menu {
+  position: relative;
+}
+
+.user-menu-trigger {
+  cursor: pointer;
+  min-height: 42px;
+  padding: 0.56rem 1.05rem;
+  font-size: 1.04rem;
+}
+
+.user-menu-panel {
+  position: absolute;
+  top: calc(100% + 0.45rem);
+  right: 0;
+  min-width: 170px;
+  padding: 0.35rem;
+  display: none;
+  flex-direction: column;
+  gap: 0.2rem;
+  background: #fff;
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  box-shadow: 0 16px 24px rgba(15, 23, 42, 0.15);
+  z-index: 70;
+}
+
+.user-menu.open .user-menu-panel {
+  display: flex;
+}
+
+.user-menu-item {
+  border: 1px solid transparent;
+  background: transparent;
+  color: var(--text-color);
+  border-radius: 8px;
+  text-align: left;
+  font-weight: 700;
+  font-size: 0.9rem;
+  padding: 0.5rem 0.65rem;
+  cursor: pointer;
+}
+
+.user-menu-item:hover {
+  background: #f8fafc;
+  border-color: #d6e3f2;
+}
+
 .app-main {
   padding-top: 1.25rem;
 }

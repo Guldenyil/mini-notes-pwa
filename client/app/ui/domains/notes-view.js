@@ -5,6 +5,7 @@ export async function renderMainApp(uiManager) {
   uiManager.currentView = 'main';
   const user = authManager.user;
   const currentLocale = getCurrentLocale();
+  const displayUsername = formatDisplayUsername(user.username);
 
   document.body.innerHTML = `
     <div class="app-container">
@@ -13,7 +14,6 @@ export async function renderMainApp(uiManager) {
           <h1>📝 Mini Notes</h1>
         </div>
         <div class="header-right">
-          <span class="user-badge">👤 ${user.username}</span>
           <div class="language-switcher" aria-label="${t('localeSwitcher.label')}">
             <button type="button" class="language-current" aria-label="${t('localeSwitcher.label')}" aria-haspopup="true" aria-expanded="false">
               <span class="language-current-flag">${currentLocale === 'no' ? '🇳🇴' : '🇬🇧'}</span>
@@ -25,14 +25,20 @@ export async function renderMainApp(uiManager) {
               <button type="button" class="language-option" data-locale="no" role="menuitem" aria-label="${t('localeSwitcher.switchToNorwegian')}">🇳🇴 NO</button>
             </div>
           </div>
-          <button id="settingsBtn" class="btn btn-secondary header-action-btn settings-btn">
-            <span class="header-action-icon">⚙️</span>
-            <span>${t('notes.ui.settings')}</span>
-          </button>
-          <button id="logoutBtn" class="btn btn-secondary header-action-btn logout-btn">
-            <span class="header-action-icon">🚪</span>
-            <span>${t('notes.ui.logout')}</span>
-          </button>
+          <div class="user-menu" id="userMenu">
+            <button
+              id="userMenuTrigger"
+              type="button"
+              class="user-badge user-menu-trigger"
+              aria-haspopup="true"
+              aria-expanded="false"
+              aria-label="Open user menu"
+            >👤 ${displayUsername}</button>
+            <div class="user-menu-panel" id="userMenuPanel" role="menu">
+              <button id="settingsBtn" type="button" class="user-menu-item" role="menuitem">⚙️ ${t('notes.ui.settings')}</button>
+              <button id="logoutBtn" type="button" class="user-menu-item" role="menuitem">🚪 ${t('notes.ui.logout')}</button>
+            </div>
+          </div>
         </div>
       </header>
 
@@ -82,11 +88,45 @@ export async function renderMainApp(uiManager) {
     </div>
   `;
 
+  const userMenu = document.getElementById('userMenu');
+  const userMenuTrigger = document.getElementById('userMenuTrigger');
+  const userMenuPanel = document.getElementById('userMenuPanel');
+
+  const closeUserMenu = () => {
+    userMenu.classList.remove('open');
+    userMenuTrigger.setAttribute('aria-expanded', 'false');
+  };
+
+  userMenuTrigger.addEventListener('click', (event) => {
+    event.stopPropagation();
+    const isOpen = userMenu.classList.contains('open');
+    closeUserMenu();
+    if (!isOpen) {
+      userMenu.classList.add('open');
+      userMenuTrigger.setAttribute('aria-expanded', 'true');
+      userMenuPanel.querySelector('.user-menu-item')?.focus();
+    }
+  });
+
+  document.addEventListener('click', (event) => {
+    if (!event.target.closest('#userMenu')) {
+      closeUserMenu();
+    }
+  });
+
+  document.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape') {
+      closeUserMenu();
+    }
+  });
+
   document.getElementById('settingsBtn').addEventListener('click', () => {
+    closeUserMenu();
     window.location.hash = '#settings';
   });
 
   document.getElementById('logoutBtn').addEventListener('click', () => {
+    closeUserMenu();
     authManager.logout();
   });
 
@@ -368,4 +408,13 @@ function escapeHtml(text) {
   const div = document.createElement('div');
   div.textContent = text;
   return div.innerHTML;
+}
+
+function formatDisplayUsername(username) {
+  const safeUsername = String(username || '').trim();
+  if (!safeUsername) {
+    return '';
+  }
+
+  return safeUsername.charAt(0).toUpperCase() + safeUsername.slice(1);
 }
