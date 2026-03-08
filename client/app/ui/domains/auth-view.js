@@ -1,20 +1,25 @@
 import { authManager } from '../../auth/auth-manager.js';
-import { t } from '../../i18n/index.js';
+import { getCurrentLocale, t } from '../../i18n/index.js';
 
 export function renderRegisterView(uiManager) {
   uiManager.currentView = 'register';
   uiManager.ensureCSS();
+  const currentLocale = getCurrentLocale();
 
   document.body.innerHTML = `
     <main class="auth-container" role="main">
       <div class="auth-card">
-        <h1>Create Account</h1>
-        <p class="subtitle">Join Mini Notes to start taking notes</p>
+        <div class="language-switcher" aria-label="Language switcher">
+          <button type="button" class="language-btn ${currentLocale === 'en' ? 'active' : ''}" data-locale="en" aria-label="${t('localeSwitcher.switchToEnglish')}">🇬🇧 EN</button>
+          <button type="button" class="language-btn ${currentLocale === 'no' ? 'active' : ''}" data-locale="no" aria-label="${t('localeSwitcher.switchToNorwegian')}">🇳🇴 NO</button>
+        </div>
+        <h1>${t('auth.ui.registerTitle')}</h1>
+        <p class="subtitle">${t('auth.ui.registerSubtitle')}</p>
 
         <form id="registerForm" class="auth-form" novalidate>
           <div class="form-row">
             <div class="form-group">
-              <label for="username">Username</label>
+              <label for="username">${t('auth.ui.usernameLabel')}</label>
               <input
                 type="text"
                 id="username"
@@ -26,11 +31,11 @@ export function renderRegisterView(uiManager) {
                 autocomplete="username"
                 placeholder="johndoe"
               >
-              <small>3-30 characters, letters, numbers, - and _ only</small>
+              <small>${t('auth.ui.usernameHint')}</small>
             </div>
 
             <div class="form-group">
-              <label for="email">Email</label>
+              <label for="email">${t('auth.ui.emailLabel')}</label>
               <input
                 type="email"
                 id="email"
@@ -44,7 +49,7 @@ export function renderRegisterView(uiManager) {
 
           <div class="form-row">
             <div class="form-group">
-              <label for="password">Password</label>
+              <label for="password">${t('auth.ui.passwordLabel')}</label>
               <input
                 type="password"
                 id="password"
@@ -52,20 +57,20 @@ export function renderRegisterView(uiManager) {
                 required
                 minlength="8"
                 autocomplete="new-password"
-                placeholder="At least 8 characters"
+                placeholder="${t('auth.ui.passwordPlaceholder')}"
               >
-              <small>Minimum 8 characters</small>
+              <small>${t('auth.ui.passwordHint')}</small>
             </div>
 
             <div class="form-group">
-              <label for="passwordConfirm">Confirm Password</label>
+              <label for="passwordConfirm">${t('auth.ui.passwordConfirmLabel')}</label>
               <input
                 type="password"
                 id="passwordConfirm"
                 name="passwordConfirm"
                 required
                 autocomplete="new-password"
-                placeholder="Repeat your password"
+                placeholder="${t('auth.ui.passwordConfirmPlaceholder')}"
               >
             </div>
           </div>
@@ -73,11 +78,11 @@ export function renderRegisterView(uiManager) {
           <div class="tos-section">
             <div class="tos-summary">
               <ul>
-                <li>You own your data completely</li>
-                <li>We collect minimal personal info (email, username)</li>
-                <li>We never sell or share your data</li>
-                <li>You can export or delete your data anytime</li>
-                <li>GDPR compliant with full user rights</li>
+                <li>${t('auth.ui.tosBullet1')}</li>
+                <li>${t('auth.ui.tosBullet2')}</li>
+                <li>${t('auth.ui.tosBullet3')}</li>
+                <li>${t('auth.ui.tosBullet4')}</li>
+                <li>${t('auth.ui.tosBullet5')}</li>
               </ul>
             </div>
 
@@ -90,9 +95,9 @@ export function renderRegisterView(uiManager) {
                   required
                 >
                 <span>
-                  I have read and agree to the
-                  <a href="#" class="tos-link" id="tosLink" aria-label="Read Terms of Service">Terms of Service</a> and
-                  <a href="#" class="tos-link" id="privacyLink" aria-label="Read Privacy Policy">Privacy Policy</a>
+                  ${t('auth.ui.tosAgreementPrefix')}
+                  <a href="#" class="tos-link" id="tosLink" aria-label="${t('auth.ui.termsLink')}">${t('auth.ui.termsLink')}</a> and
+                  <a href="#" class="tos-link" id="privacyLink" aria-label="${t('auth.ui.privacyLink')}">${t('auth.ui.privacyLink')}</a>
                 </span>
               </label>
             </div>
@@ -100,11 +105,11 @@ export function renderRegisterView(uiManager) {
 
           <div id="registerError" class="error-message" role="alert" aria-live="assertive" style="display: none;"></div>
 
-          <button type="submit" class="btn btn-primary">Create Account</button>
+          <button type="submit" class="btn btn-primary">${t('auth.actions.createAccount')}</button>
         </form>
 
         <div class="auth-footer">
-          Already have an account? <a href="#login">Login</a>
+          ${t('auth.ui.alreadyHaveAccount')} <a href="#login">${t('auth.ui.loginLink')}</a>
         </div>
       </div>
     </main>
@@ -124,16 +129,21 @@ export function renderRegisterView(uiManager) {
 export function renderLoginView(uiManager) {
   uiManager.currentView = 'login';
   uiManager.ensureCSS();
+  const currentLocale = getCurrentLocale();
 
   document.body.innerHTML = `
     <main class="auth-container" role="main">
       <div class="auth-card">
-        <h1>Welcome Back</h1>
-        <p class="subtitle">Login to Mini Notes</p>
+        <div class="language-switcher" aria-label="Language switcher">
+          <button type="button" class="language-btn ${currentLocale === 'en' ? 'active' : ''}" data-locale="en" aria-label="${t('localeSwitcher.switchToEnglish')}">🇬🇧 EN</button>
+          <button type="button" class="language-btn ${currentLocale === 'no' ? 'active' : ''}" data-locale="no" aria-label="${t('localeSwitcher.switchToNorwegian')}">🇳🇴 NO</button>
+        </div>
+        <h1>${t('auth.ui.welcomeBack')}</h1>
+        <p class="subtitle">${t('auth.ui.loginSubtitle')}</p>
 
         <form id="loginForm" class="auth-form" novalidate>
           <div class="form-group">
-            <label for="email">Email</label>
+            <label for="email">${t('auth.ui.emailLabel')}</label>
             <input
               type="email"
               id="email"
@@ -145,24 +155,24 @@ export function renderLoginView(uiManager) {
           </div>
 
           <div class="form-group">
-            <label for="password">Password</label>
+            <label for="password">${t('auth.ui.passwordLabel')}</label>
             <input
               type="password"
               id="password"
               name="password"
               required
               autocomplete="current-password"
-              placeholder="Your password"
+              placeholder="${t('auth.ui.passwordLabel')}"
             >
           </div>
 
           <div id="loginError" class="error-message" role="alert" aria-live="assertive" style="display: none;"></div>
 
-          <button type="submit" class="btn btn-primary">Login</button>
+          <button type="submit" class="btn btn-primary">${t('auth.actions.login')}</button>
         </form>
 
         <div class="auth-footer">
-          Don't have an account? <a href="#register">Register</a>
+          ${t('auth.ui.noAccountYet')} <a href="#register">${t('auth.ui.registerLink')}</a>
         </div>
       </div>
     </main>

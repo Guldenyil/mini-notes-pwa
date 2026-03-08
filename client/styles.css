@@ -76,6 +76,34 @@ textarea:focus-visible,
   border-bottom: 1px solid #bce6cc;
 }
 
+.language-switcher {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.language-btn {
+  min-height: 34px;
+  padding: 0.35rem 0.65rem;
+  border: 1px solid var(--border-color);
+  border-radius: 999px;
+  background: #fff;
+  color: var(--text-color);
+  font-size: 0.82rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.language-btn:hover {
+  border-color: var(--primary-color);
+}
+
+.language-btn.active {
+  background: var(--primary-color);
+  border-color: var(--primary-color);
+  color: #fff;
+}
+
 /* Authentication Views */
 .auth-container {
   min-height: 100vh;

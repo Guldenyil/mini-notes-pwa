@@ -1,9 +1,10 @@
 import { authManager } from '../../auth/auth-manager.js';
-import { t } from '../../i18n/index.js';
+import { getCurrentLocale, t } from '../../i18n/index.js';
 
 export async function renderMainApp(uiManager) {
   uiManager.currentView = 'main';
   const user = authManager.user;
+  const currentLocale = getCurrentLocale();
 
   document.body.innerHTML = `
     <div class="app-container">
@@ -13,13 +14,17 @@ export async function renderMainApp(uiManager) {
         </div>
         <div class="header-right">
           <span class="user-badge">👤 ${user.username}</span>
+          <div class="language-switcher" aria-label="${t('localeSwitcher.label')}">
+            <button type="button" class="language-btn ${currentLocale === 'en' ? 'active' : ''}" data-locale="en" aria-label="${t('localeSwitcher.switchToEnglish')}">🇬🇧 EN</button>
+            <button type="button" class="language-btn ${currentLocale === 'no' ? 'active' : ''}" data-locale="no" aria-label="${t('localeSwitcher.switchToNorwegian')}">🇳🇴 NO</button>
+          </div>
           <button id="settingsBtn" class="btn btn-secondary header-action-btn settings-btn">
             <span class="header-action-icon">⚙️</span>
-            <span>Settings</span>
+            <span>${t('notes.ui.settings')}</span>
           </button>
           <button id="logoutBtn" class="btn btn-secondary header-action-btn logout-btn">
             <span class="header-action-icon">🚪</span>
-            <span>Logout</span>
+            <span>${t('notes.ui.logout')}</span>
           </button>
         </div>
       </header>
@@ -27,17 +32,17 @@ export async function renderMainApp(uiManager) {
       <main class="app-main">
         <div class="notes-container">
           <div class="notes-header">
-            <h2>Your Notes</h2>
-            <button id="addNoteBtn" class="btn btn-primary">+ New Note</button>
+            <h2>${t('notes.ui.yourNotes')}</h2>
+            <button id="addNoteBtn" class="btn btn-primary">${t('notes.ui.newNote')}</button>
           </div>
 
           <div class="notes-filters">
-            <label for="searchInput" class="sr-only">Search notes</label>
-            <input type="text" id="searchInput" placeholder="🔍 Search notes..." class="search-input" aria-label="Search notes">
+            <label for="searchInput" class="sr-only">${t('notes.ui.searchNotes')}</label>
+            <input type="text" id="searchInput" placeholder="🔍 ${t('notes.ui.searchNotes')}" class="search-input" aria-label="${t('notes.ui.searchNotes')}">
           </div>
 
           <div id="notesGrid" class="notes-grid" aria-live="polite">
-            <div class="loading">Loading notes...</div>
+            <div class="loading">${t('notes.ui.loadingNotes')}</div>
           </div>
         </div>
       </main>
@@ -45,25 +50,25 @@ export async function renderMainApp(uiManager) {
       <div id="noteModal" class="modal" style="display: none;" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
         <div class="modal-content" tabindex="-1">
           <div class="modal-header">
-            <h3 id="modalTitle">New Note</h3>
-            <button id="closeModal" class="close-btn" aria-label="Close note editor">&times;</button>
+            <h3 id="modalTitle">${t('notes.ui.newNoteTitle')}</h3>
+            <button id="closeModal" class="close-btn" aria-label="${t('notes.ui.closeNoteEditor')}">&times;</button>
           </div>
           <div class="modal-body">
-            <label for="noteTitle" class="sr-only">Note title</label>
-            <input type="text" id="noteTitle" placeholder="Note title" class="note-input" aria-label="Note title">
-            <label for="noteContent" class="sr-only">Note content</label>
-            <textarea id="noteContent" placeholder="Write your note here..." class="note-textarea" aria-label="Note content"></textarea>
+            <label for="noteTitle" class="sr-only">${t('notes.ui.noteTitle')}</label>
+            <input type="text" id="noteTitle" placeholder="${t('notes.ui.noteTitlePlaceholder')}" class="note-input" aria-label="${t('notes.ui.noteTitle')}">
+            <label for="noteContent" class="sr-only">${t('notes.ui.noteContent')}</label>
+            <textarea id="noteContent" placeholder="${t('notes.ui.noteContentPlaceholder')}" class="note-textarea" aria-label="${t('notes.ui.noteContent')}"></textarea>
             <div class="note-options">
-              <label for="noteCategory" class="sr-only">Note category</label>
-              <input type="text" id="noteCategory" placeholder="Category (optional)" class="note-input-small" aria-label="Note category">
+              <label for="noteCategory" class="sr-only">${t('notes.ui.noteCategory')}</label>
+              <input type="text" id="noteCategory" placeholder="${t('notes.ui.noteCategoryPlaceholder')}" class="note-input-small" aria-label="${t('notes.ui.noteCategory')}">
               <label class="pin-label">
-                <input type="checkbox" id="notePinned"> 📌 Pin this note
+                <input type="checkbox" id="notePinned"> ${t('notes.ui.pinThisNote')}
               </label>
             </div>
           </div>
           <div class="modal-footer">
-            <button id="cancelNote" class="btn btn-secondary">Cancel</button>
-            <button id="saveNote" class="btn btn-primary">Save Note</button>
+            <button id="cancelNote" class="btn btn-secondary">${t('notes.ui.cancel')}</button>
+            <button id="saveNote" class="btn btn-primary">${t('notes.ui.saveNote')}</button>
           </div>
         </div>
       </div>
@@ -110,14 +115,14 @@ export function showNoteModal(uiManager, note = null) {
   const notePinned = document.getElementById('notePinned');
 
   if (note) {
-    title.textContent = 'Edit Note';
+    title.textContent = t('notes.ui.editNote');
     noteTitle.value = note.title;
     noteContent.value = note.content;
     noteCategory.value = note.category || '';
     notePinned.checked = note.isPinned;
     uiManager.editingNoteId = note.id;
   } else {
-    title.textContent = 'New Note';
+    title.textContent = t('notes.ui.newNoteTitle');
     noteTitle.value = '';
     noteContent.value = '';
     noteCategory.value = '';
@@ -193,12 +198,12 @@ export function displayNotes(uiManager, notes) {
   const grid = document.getElementById('notesGrid');
 
   if (notes.length === 0) {
-    grid.innerHTML = '<p class="no-notes">No notes yet. Click "+ New Note" to create one!</p>';
+    grid.innerHTML = `<p class="no-notes">${t('notes.ui.noNotesYet')}</p>`;
     return;
   }
 
   grid.innerHTML = notes.map((note) => `
-    <article class="note-card ${note.isPinned ? 'pinned' : ''}" data-id="${note.id}" tabindex="0" role="button" aria-label="Open note ${escapeHtml(note.title)}">
+    <article class="note-card ${note.isPinned ? 'pinned' : ''}" data-id="${note.id}" tabindex="0" role="button" aria-label="${t('notes.ui.openNote')} ${escapeHtml(note.title)}">
       ${note.isPinned ? '<div class="pin-indicator">📌</div>' : ''}
       <h3 class="note-title">${escapeHtml(note.title)}</h3>
       <p class="note-content">${escapeHtml(note.content)}</p>
@@ -206,8 +211,8 @@ export function displayNotes(uiManager, notes) {
       <div class="note-footer">
         <span class="note-date">${new Date(note.createdAt).toLocaleDateString()}</span>
         <div class="note-actions">
-          <button class="btn-icon edit-note" data-id="${note.id}" title="Edit" aria-label="Edit note ${escapeHtml(note.title)}">✏️</button>
-          <button class="btn-icon delete-note" data-id="${note.id}" title="Delete" aria-label="Delete note ${escapeHtml(note.title)}">🗑️</button>
+          <button class="btn-icon edit-note" data-id="${note.id}" title="${t('notes.ui.edit')}" aria-label="${t('notes.ui.edit')} ${escapeHtml(note.title)}">✏️</button>
+          <button class="btn-icon delete-note" data-id="${note.id}" title="${t('notes.ui.delete')}" aria-label="${t('notes.ui.delete')} ${escapeHtml(note.title)}">🗑️</button>
         </div>
       </div>
     </article>
@@ -267,26 +272,26 @@ export function showNoteViewModal(uiManager, note) {
   overlay.id = 'noteViewOverlay';
 
   overlay.innerHTML = `
-    <div class="modal-content note-view-modal" role="dialog" aria-modal="true" aria-label="View note" tabindex="-1">
+    <div class="modal-content note-view-modal" role="dialog" aria-modal="true" aria-label="${t('notes.ui.viewNote')}" tabindex="-1">
       <div class="modal-header">
         <h2>${escapeHtml(note.title)}</h2>
-        <button class="btn-icon close-modal" aria-label="Close note">✕</button>
+        <button class="btn-icon close-modal" aria-label="${t('notes.ui.closeNote')}">✕</button>
       </div>
       <div class="modal-body">
         <div class="note-view-content">${escapeHtml(note.content)}</div>
-        ${note.category ? `<div class="note-view-meta"><strong>Category:</strong> ${escapeHtml(note.category)}</div>` : ''}
+        ${note.category ? `<div class="note-view-meta"><strong>${t('notes.ui.category')}</strong> ${escapeHtml(note.category)}</div>` : ''}
         <div class="note-view-meta">
-          <strong>Created:</strong> ${new Date(note.createdAt).toLocaleString()}
+          <strong>${t('notes.ui.created')}</strong> ${new Date(note.createdAt).toLocaleString()}
         </div>
         ${note.updatedAt !== note.createdAt ? `
           <div class="note-view-meta">
-            <strong>Updated:</strong> ${new Date(note.updatedAt).toLocaleString()}
+            <strong>${t('notes.ui.updated')}</strong> ${new Date(note.updatedAt).toLocaleString()}
           </div>
         ` : ''}
       </div>
       <div class="modal-footer">
-        <button class="btn btn-primary edit-from-view" data-id="${note.id}">Edit Note</button>
-        <button class="btn btn-secondary close-view-modal">Close</button>
+        <button class="btn btn-primary edit-from-view" data-id="${note.id}">${t('notes.ui.editNote')}</button>
+        <button class="btn btn-secondary close-view-modal">${t('notes.ui.close')}</button>
       </div>
     </div>
   `;

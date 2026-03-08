@@ -1,5 +1,6 @@
 const SUPPORTED_LOCALES = ['en', 'no'];
 const DEFAULT_LOCALE = 'en';
+const LOCALE_STORAGE_KEY = 'mini-notes-locale';
 
 const translations = {
   en: {
@@ -12,6 +13,32 @@ const translations = {
       onlineNotice: 'Connection restored. You are back online.'
     },
     auth: {
+      ui: {
+        registerTitle: 'Create Account',
+        registerSubtitle: 'Join Mini Notes to start taking notes',
+        usernameLabel: 'Username',
+        usernameHint: '3-30 characters, letters, numbers, - and _ only',
+        emailLabel: 'Email',
+        passwordLabel: 'Password',
+        passwordPlaceholder: 'At least 8 characters',
+        passwordHint: 'Minimum 8 characters',
+        passwordConfirmLabel: 'Confirm Password',
+        passwordConfirmPlaceholder: 'Repeat your password',
+        tosBullet1: 'You own your data completely',
+        tosBullet2: 'We collect minimal personal info (email, username)',
+        tosBullet3: 'We never sell or share your data',
+        tosBullet4: 'You can export or delete your data anytime',
+        tosBullet5: 'GDPR compliant with full user rights',
+        tosAgreementPrefix: 'I have read and agree to the',
+        termsLink: 'Terms of Service',
+        privacyLink: 'Privacy Policy',
+        alreadyHaveAccount: 'Already have an account?',
+        noAccountYet: "Don't have an account?",
+        welcomeBack: 'Welcome Back',
+        loginSubtitle: 'Login to Mini Notes',
+        loginLink: 'Login',
+        registerLink: 'Register'
+      },
       errors: {
         passwordsMismatch: 'Passwords do not match',
         tosRequired: 'You must accept the Terms of Service',
@@ -29,6 +56,36 @@ const translations = {
       }
     },
     notes: {
+      ui: {
+        settings: 'Settings',
+        logout: 'Logout',
+        yourNotes: 'Your Notes',
+        newNote: '+ New Note',
+        searchNotes: 'Search notes...',
+        loadingNotes: 'Loading notes...',
+        noteTitle: 'Note title',
+        noteContent: 'Note content',
+        noteCategory: 'Note category',
+        noteTitlePlaceholder: 'Note title',
+        noteContentPlaceholder: 'Write your note here...',
+        noteCategoryPlaceholder: 'Category (optional)',
+        pinThisNote: '📌 Pin this note',
+        cancel: 'Cancel',
+        saveNote: 'Save Note',
+        editNote: 'Edit Note',
+        newNoteTitle: 'New Note',
+        noNotesYet: 'No notes yet. Click "+ New Note" to create one!',
+        openNote: 'Open note',
+        edit: 'Edit',
+        delete: 'Delete',
+        closeNoteEditor: 'Close note editor',
+        viewNote: 'View note',
+        closeNote: 'Close note',
+        category: 'Category:',
+        created: 'Created:',
+        updated: 'Updated:',
+        close: 'Close'
+      },
       errors: {
         fillTitleAndContent: 'Please fill in both title and content',
         saveFailed: 'Failed to save note: {message}',
@@ -40,6 +97,25 @@ const translations = {
       }
     },
     account: {
+      ui: {
+        title: 'Account Settings',
+        backToNotes: '← Back to Notes',
+        logout: 'Logout',
+        accountInformation: 'Account Information',
+        username: 'Username:',
+        email: 'Email:',
+        memberSince: 'Member Since:',
+        dataManagement: 'Data Management',
+        exportAllData: 'Export All Data',
+        exportHelp: 'Download all your notes and account data in JSON format',
+        legalDocuments: 'Legal Documents',
+        viewTos: 'View Terms of Service',
+        viewPrivacy: 'View Privacy Policy',
+        tosVersion: 'ToS Version:',
+        dangerZone: '⚠️ Danger Zone',
+        dangerText: 'Account deletion is permanent and cannot be undone. All your data will be permanently deleted within 48 hours.',
+        deleteAccount: 'Delete Account'
+      },
       errors: {
         exportFailed: 'Export failed: {message}',
         deletionFailed: 'Account deletion failed: {message}'
@@ -58,6 +134,11 @@ const translations = {
     },
     errors: {
       generic: 'Something went wrong. Please try again.'
+    },
+    localeSwitcher: {
+      label: 'Language switcher',
+      switchToEnglish: 'Switch language to English',
+      switchToNorwegian: 'Switch language to Norwegian'
     }
   },
   no: {
@@ -70,6 +151,32 @@ const translations = {
       onlineNotice: 'Tilkoblingen er tilbake. Du er online igjen.'
     },
     auth: {
+      ui: {
+        registerTitle: 'Opprett konto',
+        registerSubtitle: 'Bli med i Mini Notes for å begynne å skrive notater',
+        usernameLabel: 'Brukernavn',
+        usernameHint: '3-30 tegn, kun bokstaver, tall, - og _',
+        emailLabel: 'E-post',
+        passwordLabel: 'Passord',
+        passwordPlaceholder: 'Minst 8 tegn',
+        passwordHint: 'Minimum 8 tegn',
+        passwordConfirmLabel: 'Bekreft passord',
+        passwordConfirmPlaceholder: 'Gjenta passordet ditt',
+        tosBullet1: 'Du eier dataene dine fullt ut',
+        tosBullet2: 'Vi samler kun minimum av persondata (e-post, brukernavn)',
+        tosBullet3: 'Vi selger eller deler aldri dataene dine',
+        tosBullet4: 'Du kan eksportere eller slette dataene dine når som helst',
+        tosBullet5: 'GDPR-kompatibel med fulle brukerrettigheter',
+        tosAgreementPrefix: 'Jeg har lest og godtar',
+        termsLink: 'Bruksvilkår',
+        privacyLink: 'Personvernerklæring',
+        alreadyHaveAccount: 'Har du allerede en konto?',
+        noAccountYet: 'Har du ikke en konto?',
+        welcomeBack: 'Velkommen tilbake',
+        loginSubtitle: 'Logg inn på Mini Notes',
+        loginLink: 'Logg inn',
+        registerLink: 'Registrer deg'
+      },
       errors: {
         passwordsMismatch: 'Passordene samsvarer ikke',
         tosRequired: 'Du må godta bruksvilkårene',
@@ -87,6 +194,36 @@ const translations = {
       }
     },
     notes: {
+      ui: {
+        settings: 'Innstillinger',
+        logout: 'Logg ut',
+        yourNotes: 'Notatene dine',
+        newNote: '+ Nytt notat',
+        searchNotes: 'Søk i notater...',
+        loadingNotes: 'Laster notater...',
+        noteTitle: 'Notattittel',
+        noteContent: 'Notatinnhold',
+        noteCategory: 'Notatkategori',
+        noteTitlePlaceholder: 'Notattittel',
+        noteContentPlaceholder: 'Skriv notatet ditt her...',
+        noteCategoryPlaceholder: 'Kategori (valgfritt)',
+        pinThisNote: '📌 Fest dette notatet',
+        cancel: 'Avbryt',
+        saveNote: 'Lagre notat',
+        editNote: 'Rediger notat',
+        newNoteTitle: 'Nytt notat',
+        noNotesYet: 'Ingen notater ennå. Klikk "+ Nytt notat" for å opprette et!',
+        openNote: 'Åpne notat',
+        edit: 'Rediger',
+        delete: 'Slett',
+        closeNoteEditor: 'Lukk notatredigering',
+        viewNote: 'Vis notat',
+        closeNote: 'Lukk notat',
+        category: 'Kategori:',
+        created: 'Opprettet:',
+        updated: 'Oppdatert:',
+        close: 'Lukk'
+      },
       errors: {
         fillTitleAndContent: 'Vennligst fyll ut både tittel og innhold',
         saveFailed: 'Kunne ikke lagre notat: {message}',
@@ -98,6 +235,25 @@ const translations = {
       }
     },
     account: {
+      ui: {
+        title: 'Kontoinnstillinger',
+        backToNotes: '← Tilbake til notater',
+        logout: 'Logg ut',
+        accountInformation: 'Kontoinformasjon',
+        username: 'Brukernavn:',
+        email: 'E-post:',
+        memberSince: 'Medlem siden:',
+        dataManagement: 'Datahåndtering',
+        exportAllData: 'Eksporter alle data',
+        exportHelp: 'Last ned alle notater og kontodata i JSON-format',
+        legalDocuments: 'Juridiske dokumenter',
+        viewTos: 'Se bruksvilkår',
+        viewPrivacy: 'Se personvernerklæring',
+        tosVersion: 'ToS-versjon:',
+        dangerZone: '⚠️ Faresone',
+        dangerText: 'Sletting av konto er permanent og kan ikke angres. Alle data vil bli slettet permanent innen 48 timer.',
+        deleteAccount: 'Slett konto'
+      },
       errors: {
         exportFailed: 'Eksport mislyktes: {message}',
         deletionFailed: 'Sletting av konto mislyktes: {message}'
@@ -116,6 +272,11 @@ const translations = {
     },
     errors: {
       generic: 'Noe gikk galt. Prøv igjen.'
+    },
+    localeSwitcher: {
+      label: 'Språkvelger',
+      switchToEnglish: 'Bytt språk til engelsk',
+      switchToNorwegian: 'Bytt språk til norsk'
     }
   }
 };
@@ -158,7 +319,15 @@ export function detectBrowserLocale() {
 }
 
 export function initI18n() {
-  activeLocale = detectBrowserLocale();
+  let preferredLocale = null;
+
+  if (typeof localStorage !== 'undefined') {
+    preferredLocale = localStorage.getItem(LOCALE_STORAGE_KEY);
+  }
+
+  activeLocale = preferredLocale
+    ? normalizeLocale(preferredLocale)
+    : detectBrowserLocale();
 
   if (typeof document !== 'undefined') {
     document.documentElement.lang = activeLocale;
@@ -168,6 +337,21 @@ export function initI18n() {
 }
 
 export function getCurrentLocale() {
+  return activeLocale;
+}
+
+export function setLocale(locale) {
+  const normalizedLocale = normalizeLocale(locale);
+  activeLocale = normalizedLocale;
+
+  if (typeof document !== 'undefined') {
+    document.documentElement.lang = activeLocale;
+  }
+
+  if (typeof localStorage !== 'undefined') {
+    localStorage.setItem(LOCALE_STORAGE_KEY, activeLocale);
+  }
+
   return activeLocale;
 }
 

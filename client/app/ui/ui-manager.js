@@ -28,6 +28,7 @@ import {
 } from './domains/settings-view.js';
 import { loadLegalDocument } from './domains/legal-content.js';
 import { authManager } from '../auth/auth-manager.js';
+import { getCurrentLocale, setLocale } from '../i18n/index.js';
 
 class UIManager {
   constructor() {
@@ -86,18 +87,45 @@ class UIManager {
 
   showRegisterView() {
     renderRegisterView(this);
+    this.setupLanguageSwitcher();
   }
 
   showLoginView() {
     renderLoginView(this);
+    this.setupLanguageSwitcher();
   }
 
   async showMainApp() {
     await renderMainApp(this);
+    this.setupLanguageSwitcher();
   }
 
   showSettingsView() {
     renderSettingsView(this);
+    this.setupLanguageSwitcher();
+  }
+
+  setupLanguageSwitcher() {
+    const buttons = document.querySelectorAll('.language-switcher [data-locale]');
+    if (!buttons.length) {
+      return;
+    }
+
+    const currentLocale = getCurrentLocale();
+
+    buttons.forEach((button) => {
+      const locale = button.getAttribute('data-locale');
+      button.classList.toggle('active', locale === currentLocale);
+
+      button.addEventListener('click', () => {
+        if (!locale || locale === getCurrentLocale()) {
+          return;
+        }
+
+        setLocale(locale);
+        window.location.reload();
+      });
+    });
   }
 
   async handleRegister(event) {
