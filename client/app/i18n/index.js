@@ -167,9 +167,21 @@ export function getCurrentLocale() {
   return activeLocale;
 }
 
+function getTranslationValue(locale, key) {
+  const dict = translations[locale];
+  if (!dict) {
+    return undefined;
+  }
+
+  return key.split('.').reduce((cursor, part) => cursor?.[part], dict);
+}
+
 export function t(key, params = {}, locale = activeLocale) {
-  const dict = translations[locale] || translations[DEFAULT_LOCALE];
-  const value = key.split('.').reduce((cursor, part) => cursor?.[part], dict);
+  const normalizedLocale = normalizeLocale(locale);
+  const value = getTranslationValue(normalizedLocale, key)
+    ?? getTranslationValue(DEFAULT_LOCALE, key)
+    ?? getTranslationValue(normalizedLocale, 'errors.generic')
+    ?? getTranslationValue(DEFAULT_LOCALE, 'errors.generic');
 
   if (typeof value !== 'string') {
     return key;
