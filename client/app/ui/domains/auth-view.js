@@ -1,4 +1,5 @@
 import { authManager } from '../../auth/auth-manager.js';
+import { t } from '../../i18n/index.js';
 
 export function renderRegisterView(uiManager) {
   uiManager.currentView = 'register';
@@ -176,18 +177,18 @@ export async function handleRegister(uiManager, event) {
   const tosAccepted = formData.get('tosAccepted') === 'on';
 
   if (password !== passwordConfirm) {
-    uiManager.showError('registerError', 'Passwords do not match');
+    uiManager.showError('registerError', t('auth.errors.passwordsMismatch'));
     return;
   }
 
   if (!tosAccepted) {
-    uiManager.showError('registerError', 'You must accept the Terms of Service');
+    uiManager.showError('registerError', t('auth.errors.tosRequired'));
     return;
   }
 
   const submitBtn = form.querySelector('button[type="submit"]');
   submitBtn.disabled = true;
-  submitBtn.textContent = 'Creating Account...';
+  submitBtn.textContent = t('auth.actions.creatingAccount');
 
   const result = await authManager.register(username, email, password, tosAccepted);
 
@@ -198,7 +199,7 @@ export async function handleRegister(uiManager, event) {
 
   uiManager.showError('registerError', result.error);
   submitBtn.disabled = false;
-  submitBtn.textContent = 'Create Account';
+  submitBtn.textContent = t('auth.actions.createAccount');
 }
 
 export async function handleLogin(uiManager, event) {
@@ -211,7 +212,7 @@ export async function handleLogin(uiManager, event) {
 
   const submitBtn = form.querySelector('button[type="submit"]');
   submitBtn.disabled = true;
-  submitBtn.textContent = 'Logging in...';
+  submitBtn.textContent = t('auth.actions.loggingIn');
 
   const result = await authManager.login(email, password);
 
@@ -222,5 +223,5 @@ export async function handleLogin(uiManager, event) {
 
   uiManager.showError('loginError', result.error);
   submitBtn.disabled = false;
-  submitBtn.textContent = 'Login';
+  submitBtn.textContent = t('auth.actions.login');
 }

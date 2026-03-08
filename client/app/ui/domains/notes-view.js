@@ -1,4 +1,5 @@
 import { authManager } from '../../auth/auth-manager.js';
+import { t } from '../../i18n/index.js';
 
 export async function renderMainApp(uiManager) {
   uiManager.currentView = 'main';
@@ -135,7 +136,7 @@ export async function saveNote(uiManager) {
   const isPinned = document.getElementById('notePinned').checked;
 
   if (!title || !content) {
-    alert('Please fill in both title and content');
+    alert(t('notes.errors.fillTitleAndContent'));
     return;
   }
 
@@ -157,7 +158,7 @@ export async function saveNote(uiManager) {
     hideNoteModal(uiManager);
     await loadNotes(uiManager);
   } catch (error) {
-    alert(`Failed to save note: ${error.message}`);
+    alert(t('notes.errors.saveFailed', { message: error.message }));
   }
 }
 
@@ -179,7 +180,7 @@ export async function loadNotes(uiManager) {
     displayNotes(uiManager, uiManager.notes);
   } catch (error) {
     console.error('Failed to load notes:', error);
-    document.getElementById('notesGrid').innerHTML = `<p class="error">Failed to load notes: ${error.message}</p>`;
+    document.getElementById('notesGrid').innerHTML = `<p class="error">${t('notes.errors.loadFailed', { message: error.message })}</p>`;
   }
 }
 
@@ -299,7 +300,7 @@ export function hideNoteViewModal() {
 }
 
 export async function deleteNote(uiManager, noteId) {
-  if (!confirm('Are you sure you want to delete this note?')) {
+  if (!confirm(t('notes.prompts.confirmDelete'))) {
     return;
   }
 
@@ -309,7 +310,7 @@ export async function deleteNote(uiManager, noteId) {
     });
     await loadNotes(uiManager);
   } catch (error) {
-    alert(`Failed to delete note: ${error.message}`);
+    alert(t('notes.errors.deleteFailed', { message: error.message }));
   }
 }
 

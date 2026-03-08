@@ -4,6 +4,7 @@
  */
 
 import { getCurrentLocale } from '../i18n/index.js';
+import { t } from '../i18n/index.js';
 
 const API_ORIGIN = (import.meta.env.VITE_API_URL || '').replace(/\/$/, '');
 const LOCAL_ORIGIN = 'http://localhost:3000';
@@ -122,7 +123,7 @@ class AuthManager {
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.message || 'Registration failed');
+        throw new Error(data.message || t('auth.errors.registrationFailed'));
       }
 
       // Save tokens and user info
@@ -156,7 +157,7 @@ class AuthManager {
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.message || 'Login failed');
+        throw new Error(data.message || t('auth.errors.loginFailed'));
       }
 
       // Save tokens and user info
@@ -198,7 +199,7 @@ class AuthManager {
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error('Token refresh failed');
+        throw new Error(t('auth.errors.tokenRefreshFailed'));
       }
 
       this.accessToken = data.accessToken;
@@ -222,7 +223,7 @@ class AuthManager {
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error('Failed to get user');
+        throw new Error(t('auth.errors.getUserFailed'));
       }
 
       this.user = data.user;
@@ -259,7 +260,7 @@ class AuthManager {
         // Refresh failed, redirect to login
         this.clearAuth();
         window.location.hash = '#login';
-        throw new Error('Session expired. Please login again.');
+        throw new Error(t('auth.errors.sessionExpired'));
       }
     }
 
@@ -309,7 +310,7 @@ class AuthManager {
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.message || 'Account deletion failed');
+        throw new Error(data.message || t('errors.generic'));
       }
 
       this.clearAuth();
@@ -328,7 +329,7 @@ class AuthManager {
       const response = await this.authenticatedFetch(`${API_URL}/account/export`);
 
       if (!response.ok) {
-        throw new Error('Export failed');
+        throw new Error(t('errors.generic'));
       }
 
       const data = await response.json();

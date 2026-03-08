@@ -9,6 +9,51 @@ const translations = {
     app: {
       loadingTitle: 'Loading...'
     },
+    auth: {
+      errors: {
+        passwordsMismatch: 'Passwords do not match',
+        tosRequired: 'You must accept the Terms of Service',
+        registrationFailed: 'Registration failed',
+        loginFailed: 'Login failed',
+        sessionExpired: 'Session expired. Please login again.',
+        tokenRefreshFailed: 'Token refresh failed',
+        getUserFailed: 'Failed to get user'
+      },
+      actions: {
+        creatingAccount: 'Creating Account...',
+        createAccount: 'Create Account',
+        loggingIn: 'Logging in...',
+        login: 'Login'
+      }
+    },
+    notes: {
+      errors: {
+        fillTitleAndContent: 'Please fill in both title and content',
+        saveFailed: 'Failed to save note: {message}',
+        loadFailed: 'Failed to load notes: {message}',
+        deleteFailed: 'Failed to delete note: {message}'
+      },
+      prompts: {
+        confirmDelete: 'Are you sure you want to delete this note?'
+      }
+    },
+    account: {
+      errors: {
+        exportFailed: 'Export failed: {message}',
+        deletionFailed: 'Account deletion failed: {message}'
+      },
+      success: {
+        exportDone: 'Data exported successfully! Check your downloads.',
+        deletionDone: 'Account deleted successfully. You will be redirected to the login page.'
+      },
+      prompts: {
+        deleteWarning: '⚠️ WARNING: This will permanently delete your account!\n\nThis action cannot be undone. All your data will be permanently deleted within 48 hours.\n\nDo you want to delete your notes or keep them as anonymous contributions?',
+        deleteNotesChoice: 'Delete your notes?\n\nYES = Delete all notes\nNO = Keep notes as anonymous contributions',
+        finalDeleteConfirmation: '🚨 FINAL CONFIRMATION 🚨\n\nThis is your last chance to cancel.\n\nYou chose to: {choice}\n\nAre you absolutely sure you want to delete your account?',
+        deleteChoiceDelete: 'DELETE all notes',
+        deleteChoiceKeep: 'KEEP notes anonymously'
+      }
+    },
     errors: {
       generic: 'Something went wrong. Please try again.'
     }
@@ -19,6 +64,51 @@ const translations = {
     },
     app: {
       loadingTitle: 'Laster...'
+    },
+    auth: {
+      errors: {
+        passwordsMismatch: 'Passordene samsvarer ikke',
+        tosRequired: 'Du må godta bruksvilkårene',
+        registrationFailed: 'Registrering mislyktes',
+        loginFailed: 'Innlogging mislyktes',
+        sessionExpired: 'Økten er utløpt. Vennligst logg inn på nytt.',
+        tokenRefreshFailed: 'Oppdatering av token mislyktes',
+        getUserFailed: 'Kunne ikke hente bruker'
+      },
+      actions: {
+        creatingAccount: 'Oppretter konto...',
+        createAccount: 'Opprett konto',
+        loggingIn: 'Logger inn...',
+        login: 'Logg inn'
+      }
+    },
+    notes: {
+      errors: {
+        fillTitleAndContent: 'Vennligst fyll ut både tittel og innhold',
+        saveFailed: 'Kunne ikke lagre notat: {message}',
+        loadFailed: 'Kunne ikke laste notater: {message}',
+        deleteFailed: 'Kunne ikke slette notat: {message}'
+      },
+      prompts: {
+        confirmDelete: 'Er du sikker på at du vil slette dette notatet?'
+      }
+    },
+    account: {
+      errors: {
+        exportFailed: 'Eksport mislyktes: {message}',
+        deletionFailed: 'Sletting av konto mislyktes: {message}'
+      },
+      success: {
+        exportDone: 'Data eksportert! Sjekk nedlastingene dine.',
+        deletionDone: 'Kontoen ble slettet. Du blir sendt til innlogging.'
+      },
+      prompts: {
+        deleteWarning: '⚠️ ADVARSEL: Dette vil slette kontoen din permanent!\n\nDenne handlingen kan ikke angres. Alle data vil bli slettet permanent innen 48 timer.\n\nVil du slette notatene dine eller beholde dem som anonyme bidrag?',
+        deleteNotesChoice: 'Slette notatene dine?\n\nJA = Slett alle notater\nNEI = Behold notater anonymt',
+        finalDeleteConfirmation: '🚨 SISTE BEKREFTELSE 🚨\n\nDette er siste sjanse til å avbryte.\n\nDu valgte å: {choice}\n\nEr du helt sikker på at du vil slette kontoen din?',
+        deleteChoiceDelete: 'SLETTE alle notater',
+        deleteChoiceKeep: 'BEHOLDE notater anonymt'
+      }
     },
     errors: {
       generic: 'Noe gikk galt. Prøv igjen.'

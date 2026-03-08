@@ -1,4 +1,5 @@
 import { authManager } from '../../auth/auth-manager.js';
+import { t } from '../../i18n/index.js';
 
 export function renderSettingsView(uiManager) {
   uiManager.currentView = 'settings';
@@ -85,36 +86,27 @@ export function renderSettingsView(uiManager) {
 export async function handleExportData() {
   const result = await authManager.exportData();
   if (result.success) {
-    alert('Data exported successfully! Check your downloads.');
+    alert(t('account.success.exportDone'));
     return;
   }
 
-  alert(`Export failed: ${result.error}`);
+  alert(t('account.errors.exportFailed', { message: result.error }));
 }
 
 export async function handleDeleteAccount() {
-  const confirmed = confirm(
-    '⚠️ WARNING: This will permanently delete your account!\n\n' +
-    'This action cannot be undone. All your data will be permanently deleted within 48 hours.\n\n' +
-    'Do you want to delete your notes or keep them as anonymous contributions?'
-  );
+  const confirmed = confirm(t('account.prompts.deleteWarning'));
 
   if (!confirmed) {
     return;
   }
 
-  const deleteNotes = confirm(
-    'Delete your notes?\n\n' +
-    'YES = Delete all notes\n' +
-    'NO = Keep notes as anonymous contributions'
-  );
+  const deleteNotes = confirm(t('account.prompts.deleteNotesChoice'));
 
-  const finalConfirm = confirm(
-    '🚨 FINAL CONFIRMATION 🚨\n\n' +
-    'This is your last chance to cancel.\n\n' +
-    `You chose to: ${deleteNotes ? 'DELETE all notes' : 'KEEP notes anonymously'}\n\n` +
-    'Are you absolutely sure you want to delete your account?'
-  );
+  const finalConfirm = confirm(t('account.prompts.finalDeleteConfirmation', {
+    choice: deleteNotes
+      ? t('account.prompts.deleteChoiceDelete')
+      : t('account.prompts.deleteChoiceKeep')
+  }));
 
   if (!finalConfirm) {
     return;
@@ -123,10 +115,10 @@ export async function handleDeleteAccount() {
   const result = await authManager.deleteAccount(deleteNotes);
 
   if (result.success) {
-    alert('Account deleted successfully. You will be redirected to the login page.');
+    alert(t('account.success.deletionDone'));
     window.location.hash = '#login';
     return;
   }
 
-  alert(`Account deletion failed: ${result.error}`);
+  alert(t('account.errors.deletionFailed', { message: result.error }));
 }
