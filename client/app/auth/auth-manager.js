@@ -3,6 +3,8 @@
  * Handles user authentication, token management, and session state
  */
 
+import { getCurrentLocale } from '../i18n/index.js';
+
 const API_ORIGIN = (import.meta.env.VITE_API_URL || '').replace(/\/$/, '');
 const LOCAL_ORIGIN = 'http://localhost:3000';
 
@@ -32,6 +34,13 @@ function resolveApiOrigin() {
 
 const API_URL = resolveApiBaseUrl();
 const API_ORIGIN_URL = resolveApiOrigin();
+
+function withLanguageHeader(headers = {}) {
+  return {
+    ...headers,
+    'Accept-Language': getCurrentLocale()
+  };
+}
 
 class AuthManager {
   constructor() {
@@ -99,9 +108,9 @@ class AuthManager {
     try {
       const response = await fetch(`${API_URL}/auth/register`, {
         method: 'POST',
-        headers: {
+        headers: withLanguageHeader({
           'Content-Type': 'application/json'
-        },
+        }),
         body: JSON.stringify({
           username,
           email,
@@ -138,9 +147,9 @@ class AuthManager {
     try {
       const response = await fetch(`${API_URL}/auth/login`, {
         method: 'POST',
-        headers: {
+        headers: withLanguageHeader({
           'Content-Type': 'application/json'
-        },
+        }),
         body: JSON.stringify({ email, password })
       });
 
@@ -180,9 +189,9 @@ class AuthManager {
     try {
       const response = await fetch(`${API_URL}/auth/refresh`, {
         method: 'POST',
-        headers: {
+        headers: withLanguageHeader({
           'Content-Type': 'application/json'
-        },
+        }),
         body: JSON.stringify({ refreshToken: this.refreshToken })
       });
 
@@ -233,7 +242,7 @@ class AuthManager {
   async authenticatedFetch(url, options = {}) {
     // Add Authorization header
     options.headers = {
-      ...options.headers,
+      ...withLanguageHeader(options.headers),
       'Authorization': `Bearer ${this.accessToken}`
     };
 
@@ -291,9 +300,9 @@ class AuthManager {
     try {
       const response = await this.authenticatedFetch(`${API_URL}/account`, {
         method: 'DELETE',
-        headers: {
+        headers: withLanguageHeader({
           'Content-Type': 'application/json'
-        },
+        }),
         body: JSON.stringify({ deleteNotes })
       });
 

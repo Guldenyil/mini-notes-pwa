@@ -3,6 +3,7 @@ import express from 'express';
 import cors from 'cors';
 import { query } from './db/connection.js';
 import { authenticate } from './middleware/auth.js';
+import { localeMiddleware } from './middleware/locale.js';
 import { apiRateLimiter } from './middleware/rateLimiter.js';
 import authRoutes from './routes/auth.js';
 import accountRoutes from './routes/account.js';
@@ -44,11 +45,12 @@ const corsOptions = {
     callback(new Error('Not allowed by CORS'));
   },
   methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'Accept-Language'],
 };
 
 app.use(cors(corsOptions));
 app.use(express.json());
+app.use(localeMiddleware);
 app.use(authenticate);
 
 app.use('/api', apiRateLimiter);
