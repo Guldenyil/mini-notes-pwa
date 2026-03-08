@@ -7,7 +7,9 @@ const translations = {
       name: 'English'
     },
     app: {
-      loadingTitle: 'Loading...'
+      loadingTitle: 'Loading...',
+      offlineNotice: 'You are offline. Some features may be limited until connection is restored.',
+      onlineNotice: 'Connection restored. You are back online.'
     },
     auth: {
       errors: {
@@ -63,7 +65,9 @@ const translations = {
       name: 'Norsk'
     },
     app: {
-      loadingTitle: 'Laster...'
+      loadingTitle: 'Laster...',
+      offlineNotice: 'Du er frakoblet. Noen funksjoner kan være begrenset til tilkoblingen er tilbake.',
+      onlineNotice: 'Tilkoblingen er tilbake. Du er online igjen.'
     },
     auth: {
       errors: {

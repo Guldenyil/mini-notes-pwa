@@ -44,6 +44,44 @@ if ('serviceWorker' in navigator) {
 // PWA Install Handler
 let deferredPrompt;
 
+function ensureNetworkStatusBanner() {
+  let banner = document.getElementById('networkStatusBanner');
+
+  if (!banner) {
+    banner = document.createElement('div');
+    banner.id = 'networkStatusBanner';
+    banner.className = 'network-status-banner';
+    banner.setAttribute('role', 'status');
+    banner.setAttribute('aria-live', 'polite');
+    banner.hidden = true;
+    document.body.prepend(banner);
+  }
+
+  return banner;
+}
+
+function showNetworkStatus(isOnline) {
+  const banner = ensureNetworkStatusBanner();
+
+  if (isOnline) {
+    banner.textContent = t('app.onlineNotice');
+    banner.classList.remove('offline');
+    banner.classList.add('online');
+    banner.hidden = false;
+
+    window.setTimeout(() => {
+      banner.hidden = true;
+    }, 3000);
+
+    return;
+  }
+
+  banner.textContent = t('app.offlineNotice');
+  banner.classList.remove('online');
+  banner.classList.add('offline');
+  banner.hidden = false;
+}
+
 window.addEventListener('beforeinstallprompt', (e) => {
   // Prevent the mini-infobar from appearing on mobile
   e.preventDefault();
@@ -60,12 +98,16 @@ window.addEventListener('appinstalled', () => {
 // Online/Offline Detection
 window.addEventListener('online', () => {
   console.log('✓ Back online');
-  // You could show a notification to the user
+  showNetworkStatus(true);
 });
 
 window.addEventListener('offline', () => {
   console.log('✗ Gone offline - PWA will continue to work');
-  // You could show a notification to the user
+  showNetworkStatus(false);
 });
+
+if (!navigator.onLine) {
+  showNetworkStatus(false);
+}
 
 console.log('✓ Mini Notes initialized');
