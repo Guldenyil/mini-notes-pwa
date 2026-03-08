@@ -6,6 +6,7 @@
 import express from 'express';
 import requestValidator from 'express-request-validator';
 import { query } from '../db/connection.js';
+import { t } from '../i18n/index.js';
 import {
   createNoteSchema,
   updateNoteSchema,
@@ -75,7 +76,7 @@ router.get(
       console.error('Error fetching notes:', error);
       res.status(500).json({
         success: false,
-        error: 'Failed to retrieve notes'
+        error: t(req.locale, 'notes.errors.listFailed')
       });
     }
   }
@@ -94,7 +95,7 @@ router.get(
       if (result.rows.length === 0) {
         return res.status(404).json({
           success: false,
-          error: 'Note not found'
+          error: t(req.locale, 'notes.errors.notFound')
         });
       }
 
@@ -116,7 +117,7 @@ router.get(
       console.error('Error fetching note:', error);
       res.status(500).json({
         success: false,
-        error: 'Failed to retrieve note'
+        error: t(req.locale, 'notes.errors.readFailed')
       });
     }
   }
@@ -157,7 +158,7 @@ router.post(
       console.error('Error creating note:', error);
       res.status(500).json({
         success: false,
-        error: 'Failed to create note'
+        error: t(req.locale, 'notes.errors.createFailed')
       });
     }
   }
@@ -207,7 +208,7 @@ router.put(
       if (updates.length === 0) {
         return res.status(400).json({
           success: false,
-          error: 'No fields to update'
+          error: t(req.locale, 'notes.errors.noFieldsToUpdate')
         });
       }
 
@@ -224,7 +225,7 @@ router.put(
       if (result.rows.length === 0) {
         return res.status(404).json({
           success: false,
-          error: 'Note not found'
+          error: t(req.locale, 'notes.errors.notFound')
         });
       }
 
@@ -247,7 +248,7 @@ router.put(
       console.error('Error updating note:', error);
       res.status(500).json({
         success: false,
-        error: 'Failed to update note'
+        error: t(req.locale, 'notes.errors.updateFailed')
       });
     }
   }
@@ -266,7 +267,7 @@ router.delete(
       if (result.rows.length === 0) {
         return res.status(404).json({
           success: false,
-          error: 'Note not found'
+          error: t(req.locale, 'notes.errors.notFound')
         });
       }
 
@@ -278,7 +279,7 @@ router.delete(
       console.error('Error deleting note:', error);
       res.status(500).json({
         success: false,
-        error: 'Failed to delete note'
+        error: t(req.locale, 'notes.errors.deleteFailed')
       });
     }
   }

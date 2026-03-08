@@ -5,6 +5,7 @@ import { query } from './db/connection.js';
 import { authenticate } from './middleware/auth.js';
 import { localeMiddleware } from './middleware/locale.js';
 import { apiRateLimiter } from './middleware/rateLimiter.js';
+import { t } from './i18n/index.js';
 import authRoutes from './routes/auth.js';
 import accountRoutes from './routes/account.js';
 import notesRoutes from './routes/notes.js';
@@ -48,9 +49,9 @@ const corsOptions = {
   allowedHeaders: ['Content-Type', 'Authorization', 'Accept-Language'],
 };
 
+app.use(localeMiddleware);
 app.use(cors(corsOptions));
 app.use(express.json());
-app.use(localeMiddleware);
 app.use(authenticate);
 
 app.use('/api', apiRateLimiter);
@@ -70,7 +71,8 @@ app.use('/api/notes', notesRoutes);
 
 app.use((error, req, res, next) => {
   if (error?.message === 'Not allowed by CORS') {
-    res.status(403).json({ message: 'CORS origin not allowed' });
+    const locale = req?.locale || 'en';
+    res.status(403).json({ message: t(locale, 'errors.corsNotAllowed') });
     return;
   }
 

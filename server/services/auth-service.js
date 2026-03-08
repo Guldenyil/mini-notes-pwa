@@ -12,10 +12,11 @@ import {
 
 const CURRENT_TOS_VERSION = '1.0.0';
 
-function createServiceError(status, error, message) {
-  const serviceError = new Error(message);
+function createServiceError(status, error, messageKey) {
+  const serviceError = new Error(messageKey);
   serviceError.status = status;
   serviceError.error = error;
+  serviceError.messageKey = messageKey;
   return serviceError;
 }
 
@@ -26,7 +27,7 @@ export async function registerUser(payload) {
     throw createServiceError(
       400,
       'Terms of Service not accepted',
-      'You must accept the Terms of Service to create an account'
+      'auth.errors.termsNotAccepted'
     );
   }
 
@@ -37,7 +38,7 @@ export async function registerUser(payload) {
     throw createServiceError(
       409,
       'Email already registered',
-      'An account with this email already exists'
+      'auth.errors.emailExists'
     );
   }
 
@@ -46,7 +47,7 @@ export async function registerUser(payload) {
     throw createServiceError(
       409,
       'Username already taken',
-      'This username is already taken. Please choose another.'
+      'auth.errors.usernameTaken'
     );
   }
 
@@ -82,14 +83,14 @@ export async function loginUser(payload) {
 
   const result = await findActiveUserByEmailForLogin(normalizedEmail);
   if (result.rows.length === 0) {
-    throw createServiceError(401, 'Invalid credentials', 'Email or password is incorrect');
+    throw createServiceError(401, 'Invalid credentials', 'auth.errors.invalidCredentials');
   }
 
   const user = result.rows[0];
   const passwordValid = await bcrypt.compare(password, user.password_hash);
 
   if (!passwordValid) {
-    throw createServiceError(401, 'Invalid credentials', 'Email or password is incorrect');
+    throw createServiceError(401, 'Invalid credentials', 'auth.errors.invalidCredentials');
   }
 
   const needsTosUpdate = user.tos_version_accepted !== CURRENT_TOS_VERSION;
@@ -114,19 +115,19 @@ export async function refreshUserToken(payload) {
   const { refreshToken } = payload;
 
   if (!refreshToken) {
-    throw createServiceError(400, 'Refresh token required', 'Please provide a refresh token');
+    throw createServiceError(400, 'Refresh token required', 'auth.errors.refreshTokenRequired');
   }
 
   let decoded;
   try {
     decoded = jwt.verify(refreshToken, JWT_SECRET);
   } catch (error) {
-    throw createServiceError(401, 'Invalid refresh token', 'Refresh token is invalid or expired');
+    throw createServiceError(401, 'Invalid refresh token', 'auth.errors.invalidRefreshToken');
   }
 
   const result = await findActiveUserByIdBasic(decoded.userId);
   if (result.rows.length === 0) {
-    throw createServiceError(401, 'User not found', 'User account no longer exists');
+    throw createServiceError(401, 'User not found', 'auth.errors.userNotFound');
   }
 
   const user = result.rows[0];
@@ -141,19 +142,19 @@ export async function refreshUserToken(payload) {
 
 export async function getCurrentUser(authHeader) {
   if (!authHeader || !authHeader.startsWith('Bearer ')) {
-    throw createServiceError(401, 'Authentication required', 'Please provide a valid access token');
+    throw createServiceError(401, 'Authentication required', 'auth.errors.authenticationRequired');
   }
 
   const token = authHeader.substring(7);
   const decoded = verifyToken(token);
 
   if (!decoded) {
-    throw createServiceError(401, 'Invalid token', 'Access token is invalid or expired');
+    throw createServiceError(401, 'Invalid token', 'auth.errors.invalidToken');
   }
 
   const result = await findActiveUserByIdForMe(decoded.userId);
   if (result.rows.length === 0) {
-    throw createServiceError(404, 'User not found', 'User account no longer exists');
+    throw createServiceError(404, 'User not found', 'auth.errors.userNotFound');
   }
 
   const user = result.rows[0];

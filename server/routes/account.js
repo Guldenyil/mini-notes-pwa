@@ -6,6 +6,7 @@
 import express from 'express';
 import { requireAuth } from '../middleware/auth.js';
 import { deleteAccountRateLimiter } from '../middleware/rateLimiter.js';
+import { localizeErrorMessage } from '../i18n/http.js';
 import {
   deleteAccount,
   exportAccountData,
@@ -35,7 +36,7 @@ router.delete('/',
     } catch (error) {
       res.status(error.status || 500).json({
         error: error.error || 'Account deletion failed',
-        message: error.message || 'An error occurred while deleting your account. Please try again.'
+        message: localizeErrorMessage(req, error, 'account.errors.deletionFailed')
       });
     }
   }
@@ -58,7 +59,7 @@ router.get('/export',
     } catch (error) {
       res.status(error.status || 500).json({
         error: error.error || 'Export failed',
-        message: error.message || 'An error occurred while exporting your data. Please try again.'
+        message: localizeErrorMessage(req, error, 'account.errors.exportFailed')
       });
     }
   }
@@ -78,7 +79,7 @@ router.get('/stats',
     } catch (error) {
       res.status(error.status || 500).json({
         error: error.error || 'Failed to get statistics',
-        message: error.message || 'An error occurred while fetching statistics'
+        message: localizeErrorMessage(req, error, 'account.errors.statsFailed')
       });
     }
   }
@@ -102,7 +103,7 @@ router.patch('/profile',
     } catch (error) {
       res.status(error.status || 500).json({
         error: error.error || 'Update failed',
-        message: error.message || 'An error occurred while updating your profile'
+        message: localizeErrorMessage(req, error, 'account.errors.updateFailed')
       });
     }
   }

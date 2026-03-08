@@ -12,10 +12,11 @@ import {
   updateProfileById
 } from '../repositories/account-repository.js';
 
-function createServiceError(status, error, message) {
-  const serviceError = new Error(message);
+function createServiceError(status, error, messageKey) {
+  const serviceError = new Error(messageKey);
   serviceError.status = status;
   serviceError.error = error;
+  serviceError.messageKey = messageKey;
   return serviceError;
 }
 
@@ -46,7 +47,7 @@ export async function deleteAccount(userId, deleteNotes = true) {
     throw createServiceError(
       500,
       'Account deletion failed',
-      'An error occurred while deleting your account. Please try again.'
+      'account.errors.deletionFailed'
     );
   } finally {
     client.release();
@@ -57,7 +58,7 @@ export async function exportAccountData(userId) {
   const userResult = await findUserExportById(userId);
 
   if (userResult.rows.length === 0) {
-    throw createServiceError(404, 'User not found', 'User account not found');
+    throw createServiceError(404, 'User not found', 'account.errors.userNotFound');
   }
 
   const user = userResult.rows[0];
@@ -108,7 +109,7 @@ export async function updateAccountProfile(userId, payload) {
     throw createServiceError(
       400,
       'No fields to update',
-      'Please provide username or email to update'
+      'account.errors.noFieldsToUpdate'
     );
   }
 
@@ -121,13 +122,13 @@ export async function updateAccountProfile(userId, payload) {
       throw createServiceError(
         400,
         'Invalid username',
-        'Username must be 3-30 characters and contain only letters, numbers, underscores, and hyphens'
+        'account.errors.invalidUsername'
       );
     }
 
     const usernameCheck = await findUsernameConflict(username, userId);
     if (usernameCheck.rows.length > 0) {
-      throw createServiceError(409, 'Username taken', 'This username is already taken');
+      throw createServiceError(409, 'Username taken', 'account.errors.usernameTaken');
     }
 
     paramCount += 1;
@@ -137,13 +138,13 @@ export async function updateAccountProfile(userId, payload) {
 
   if (email) {
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-      throw createServiceError(400, 'Invalid email', 'Please provide a valid email address');
+      throw createServiceError(400, 'Invalid email', 'account.errors.invalidEmail');
     }
 
     const normalizedEmail = email.toLowerCase();
     const emailCheck = await findEmailConflict(normalizedEmail, userId);
     if (emailCheck.rows.length > 0) {
-      throw createServiceError(409, 'Email taken', 'This email is already registered');
+      throw createServiceError(409, 'Email taken', 'account.errors.emailTaken');
     }
 
     paramCount += 1;

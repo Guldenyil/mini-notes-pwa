@@ -5,6 +5,7 @@
 
 import express from 'express';
 import requestValidator from 'express-request-validator';
+import { localizeErrorMessage } from '../i18n/http.js';
 import {
   authRateLimiter,
   registrationRateLimiter
@@ -89,7 +90,7 @@ router.post('/register',
     } catch (error) {
       res.status(error.status || 500).json({
         error: error.error || 'Registration failed',
-        message: error.message || 'An error occurred during registration. Please try again.'
+        message: localizeErrorMessage(req, error, 'auth.errors.registrationFailed')
       });
     }
   }
@@ -109,7 +110,7 @@ router.post('/login',
     } catch (error) {
       res.status(error.status || 500).json({
         error: error.error || 'Login failed',
-        message: error.message || 'An error occurred during login. Please try again.'
+        message: localizeErrorMessage(req, error, 'auth.errors.loginFailed')
       });
     }
   }
@@ -126,7 +127,7 @@ router.post('/refresh', async (req, res) => {
   } catch (error) {
     res.status(error.status || 500).json({
       error: error.error || 'Token refresh failed',
-      message: error.message || 'An error occurred while refreshing the token'
+      message: localizeErrorMessage(req, error, 'auth.errors.tokenRefreshFailed')
     });
   }
 });
@@ -142,7 +143,7 @@ router.get('/me', async (req, res) => {
   } catch (error) {
     res.status(error.status || 500).json({
       error: error.error || 'Failed to get user',
-      message: error.message || 'An error occurred while fetching user information'
+      message: localizeErrorMessage(req, error, 'auth.errors.getUserFailed')
     });
   }
 });
