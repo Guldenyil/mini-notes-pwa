@@ -12,8 +12,15 @@ export function renderSettingsView(uiManager) {
         <h1>${t('account.ui.title')}</h1>
         <div class="user-info">
           <div class="language-switcher" aria-label="${t('localeSwitcher.label')}">
-            <button type="button" class="language-btn ${currentLocale === 'en' ? 'active' : ''}" data-locale="en" aria-label="${t('localeSwitcher.switchToEnglish')}">🇬🇧 EN</button>
-            <button type="button" class="language-btn ${currentLocale === 'no' ? 'active' : ''}" data-locale="no" aria-label="${t('localeSwitcher.switchToNorwegian')}">🇳🇴 NO</button>
+            <button type="button" class="language-current" aria-label="${t('localeSwitcher.label')}" aria-haspopup="true" aria-expanded="false">
+              <span class="language-current-flag">${currentLocale === 'no' ? '🇳🇴' : '🇬🇧'}</span>
+              <span class="language-current-code">${currentLocale === 'no' ? 'NO' : 'EN'}</span>
+              <span class="language-current-caret">▾</span>
+            </button>
+            <div class="language-menu" role="menu">
+              <button type="button" class="language-option" data-locale="en" role="menuitem" aria-label="${t('localeSwitcher.switchToEnglish')}">🇬🇧 EN</button>
+              <button type="button" class="language-option" data-locale="no" role="menuitem" aria-label="${t('localeSwitcher.switchToNorwegian')}">🇳🇴 NO</button>
+            </div>
           </div>
           <button id="backBtn" class="btn btn-secondary" aria-label="${t('account.ui.backToNotes')}">${t('account.ui.backToNotes')}</button>
           <button id="logoutBtn" class="btn btn-secondary" aria-label="${t('account.ui.logout')}">${t('account.ui.logout')}</button>

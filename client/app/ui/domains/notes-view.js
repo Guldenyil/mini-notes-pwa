@@ -15,8 +15,15 @@ export async function renderMainApp(uiManager) {
         <div class="header-right">
           <span class="user-badge">👤 ${user.username}</span>
           <div class="language-switcher" aria-label="${t('localeSwitcher.label')}">
-            <button type="button" class="language-btn ${currentLocale === 'en' ? 'active' : ''}" data-locale="en" aria-label="${t('localeSwitcher.switchToEnglish')}">🇬🇧 EN</button>
-            <button type="button" class="language-btn ${currentLocale === 'no' ? 'active' : ''}" data-locale="no" aria-label="${t('localeSwitcher.switchToNorwegian')}">🇳🇴 NO</button>
+            <button type="button" class="language-current" aria-label="${t('localeSwitcher.label')}" aria-haspopup="true" aria-expanded="false">
+              <span class="language-current-flag">${currentLocale === 'no' ? '🇳🇴' : '🇬🇧'}</span>
+              <span class="language-current-code">${currentLocale === 'no' ? 'NO' : 'EN'}</span>
+              <span class="language-current-caret">▾</span>
+            </button>
+            <div class="language-menu" role="menu">
+              <button type="button" class="language-option" data-locale="en" role="menuitem" aria-label="${t('localeSwitcher.switchToEnglish')}">🇬🇧 EN</button>
+              <button type="button" class="language-option" data-locale="no" role="menuitem" aria-label="${t('localeSwitcher.switchToNorwegian')}">🇳🇴 NO</button>
+            </div>
           </div>
           <button id="settingsBtn" class="btn btn-secondary header-action-btn settings-btn">
             <span class="header-action-icon">⚙️</span>

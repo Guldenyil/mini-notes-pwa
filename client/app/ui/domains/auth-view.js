@@ -10,8 +10,15 @@ export function renderRegisterView(uiManager) {
     <main class="auth-container" role="main">
       <div class="auth-card">
         <div class="language-switcher" aria-label="Language switcher">
-          <button type="button" class="language-btn ${currentLocale === 'en' ? 'active' : ''}" data-locale="en" aria-label="${t('localeSwitcher.switchToEnglish')}">🇬🇧 EN</button>
-          <button type="button" class="language-btn ${currentLocale === 'no' ? 'active' : ''}" data-locale="no" aria-label="${t('localeSwitcher.switchToNorwegian')}">🇳🇴 NO</button>
+          <button type="button" class="language-current" aria-label="${t('localeSwitcher.label')}" aria-haspopup="true" aria-expanded="false">
+            <span class="language-current-flag">${currentLocale === 'no' ? '🇳🇴' : '🇬🇧'}</span>
+            <span class="language-current-code">${currentLocale === 'no' ? 'NO' : 'EN'}</span>
+            <span class="language-current-caret">▾</span>
+          </button>
+          <div class="language-menu" role="menu">
+            <button type="button" class="language-option" data-locale="en" role="menuitem" aria-label="${t('localeSwitcher.switchToEnglish')}">🇬🇧 EN</button>
+            <button type="button" class="language-option" data-locale="no" role="menuitem" aria-label="${t('localeSwitcher.switchToNorwegian')}">🇳🇴 NO</button>
+          </div>
         </div>
         <h1>${t('auth.ui.registerTitle')}</h1>
         <p class="subtitle">${t('auth.ui.registerSubtitle')}</p>
@@ -135,8 +142,15 @@ export function renderLoginView(uiManager) {
     <main class="auth-container" role="main">
       <div class="auth-card">
         <div class="language-switcher" aria-label="Language switcher">
-          <button type="button" class="language-btn ${currentLocale === 'en' ? 'active' : ''}" data-locale="en" aria-label="${t('localeSwitcher.switchToEnglish')}">🇬🇧 EN</button>
-          <button type="button" class="language-btn ${currentLocale === 'no' ? 'active' : ''}" data-locale="no" aria-label="${t('localeSwitcher.switchToNorwegian')}">🇳🇴 NO</button>
+          <button type="button" class="language-current" aria-label="${t('localeSwitcher.label')}" aria-haspopup="true" aria-expanded="false">
+            <span class="language-current-flag">${currentLocale === 'no' ? '🇳🇴' : '🇬🇧'}</span>
+            <span class="language-current-code">${currentLocale === 'no' ? 'NO' : 'EN'}</span>
+            <span class="language-current-caret">▾</span>
+          </button>
+          <div class="language-menu" role="menu">
+            <button type="button" class="language-option" data-locale="en" role="menuitem" aria-label="${t('localeSwitcher.switchToEnglish')}">🇬🇧 EN</button>
+            <button type="button" class="language-option" data-locale="no" role="menuitem" aria-label="${t('localeSwitcher.switchToNorwegian')}">🇳🇴 NO</button>
+          </div>
         </div>
         <h1>${t('auth.ui.welcomeBack')}</h1>
         <p class="subtitle">${t('auth.ui.loginSubtitle')}</p>

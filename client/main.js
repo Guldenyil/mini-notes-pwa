@@ -4,10 +4,17 @@
  */
 
 import { getCurrentLocale, initI18n, t } from './app/i18n/index.js';
-import './ui.js';
 
-const activeLocale = initI18n();
-console.log(`✓ Locale initialized: ${activeLocale} (${t('locale.name')})`);
+async function bootstrapApp() {
+  const activeLocale = initI18n();
+  console.log(`✓ Locale initialized: ${activeLocale} (${t('locale.name')})`);
+
+  await import('./ui.js');
+}
+
+bootstrapApp().catch((error) => {
+  console.error('✗ Failed to bootstrap app:', error);
+});
 
 // Service Worker Registration (production only)
 if ('serviceWorker' in navigator) {

@@ -106,24 +106,94 @@ class UIManager {
   }
 
   setupLanguageSwitcher() {
-    const buttons = document.querySelectorAll('.language-switcher [data-locale]');
-    if (!buttons.length) {
+    const switchers = document.querySelectorAll('.language-switcher');
+    if (!switchers.length) {
       return;
     }
 
+    const localeMeta = {
+      en: { flag: '🇬🇧', label: 'EN' },
+      no: { flag: '🇳🇴', label: 'NO' }
+    };
+
+    if (this.languageSwitcherOutsideHandler) {
+      document.removeEventListener('click', this.languageSwitcherOutsideHandler);
+    }
+
+    if (this.languageSwitcherEscapeHandler) {
+      document.removeEventListener('keydown', this.languageSwitcherEscapeHandler);
+    }
+
+    const closeAllMenus = () => {
+      document.querySelectorAll('.language-switcher.open').forEach((switcher) => {
+        switcher.classList.remove('open');
+        const trigger = switcher.querySelector('.language-current');
+        if (trigger) {
+          trigger.setAttribute('aria-expanded', 'false');
+        }
+      });
+    };
+
+    this.languageSwitcherOutsideHandler = (event) => {
+      if (!event.target.closest('.language-switcher')) {
+        closeAllMenus();
+      }
+    };
+
+    this.languageSwitcherEscapeHandler = (event) => {
+      if (event.key === 'Escape') {
+        closeAllMenus();
+      }
+    };
+
+    document.addEventListener('click', this.languageSwitcherOutsideHandler);
+    document.addEventListener('keydown', this.languageSwitcherEscapeHandler);
+
     const currentLocale = getCurrentLocale();
 
-    buttons.forEach((button) => {
-      const locale = button.getAttribute('data-locale');
-      button.classList.toggle('active', locale === currentLocale);
+    switchers.forEach((switcher) => {
+      const trigger = switcher.querySelector('.language-current');
+      const options = switcher.querySelectorAll('.language-option[data-locale]');
+      const meta = localeMeta[currentLocale] || localeMeta.en;
 
-      button.addEventListener('click', () => {
-        if (!locale || locale === getCurrentLocale()) {
-          return;
+      if (!trigger || options.length === 0) {
+        return;
+      }
+
+      const flagEl = trigger.querySelector('.language-current-flag');
+      const codeEl = trigger.querySelector('.language-current-code');
+      if (flagEl) {
+        flagEl.textContent = meta.flag;
+      }
+      if (codeEl) {
+        codeEl.textContent = meta.label;
+      }
+
+      trigger.setAttribute('aria-expanded', 'false');
+      trigger.addEventListener('click', (event) => {
+        event.stopPropagation();
+        const isOpen = switcher.classList.contains('open');
+        closeAllMenus();
+        if (!isOpen) {
+          switcher.classList.add('open');
+          trigger.setAttribute('aria-expanded', 'true');
         }
+      });
 
-        setLocale(locale);
-        window.location.reload();
+      options.forEach((option) => {
+        const locale = option.getAttribute('data-locale');
+        option.classList.toggle('active', locale === currentLocale);
+
+        option.addEventListener('click', () => {
+          if (!locale || locale === getCurrentLocale()) {
+            closeAllMenus();
+            return;
+          }
+
+          setLocale(locale);
+          closeAllMenus();
+          this.handleNavigation();
+        });
       });
     });
   }
