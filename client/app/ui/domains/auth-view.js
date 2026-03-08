@@ -6,12 +6,12 @@ export function renderRegisterView(uiManager) {
   uiManager.ensureCSS();
 
   document.body.innerHTML = `
-    <div class="auth-container">
+    <main class="auth-container" role="main">
       <div class="auth-card">
         <h1>Create Account</h1>
         <p class="subtitle">Join Mini Notes to start taking notes</p>
 
-        <form id="registerForm" class="auth-form">
+        <form id="registerForm" class="auth-form" novalidate>
           <div class="form-row">
             <div class="form-group">
               <label for="username">Username</label>
@@ -23,6 +23,7 @@ export function renderRegisterView(uiManager) {
                 minlength="3"
                 maxlength="30"
                 pattern="[a-zA-Z0-9_\\-]+"
+                autocomplete="username"
                 placeholder="johndoe"
               >
               <small>3-30 characters, letters, numbers, - and _ only</small>
@@ -35,6 +36,7 @@ export function renderRegisterView(uiManager) {
                 id="email"
                 name="email"
                 required
+                autocomplete="email"
                 placeholder="you@example.com"
               >
             </div>
@@ -49,6 +51,7 @@ export function renderRegisterView(uiManager) {
                 name="password"
                 required
                 minlength="8"
+                autocomplete="new-password"
                 placeholder="At least 8 characters"
               >
               <small>Minimum 8 characters</small>
@@ -61,6 +64,7 @@ export function renderRegisterView(uiManager) {
                 id="passwordConfirm"
                 name="passwordConfirm"
                 required
+                autocomplete="new-password"
                 placeholder="Repeat your password"
               >
             </div>
@@ -87,14 +91,14 @@ export function renderRegisterView(uiManager) {
                 >
                 <span>
                   I have read and agree to the
-                  <a href="#" class="tos-link" id="tosLink">Terms of Service</a> and
-                  <a href="#" class="tos-link" id="privacyLink">Privacy Policy</a>
+                  <a href="#" class="tos-link" id="tosLink" aria-label="Read Terms of Service">Terms of Service</a> and
+                  <a href="#" class="tos-link" id="privacyLink" aria-label="Read Privacy Policy">Privacy Policy</a>
                 </span>
               </label>
             </div>
           </div>
 
-          <div id="registerError" class="error-message" style="display: none;"></div>
+          <div id="registerError" class="error-message" role="alert" aria-live="assertive" style="display: none;"></div>
 
           <button type="submit" class="btn btn-primary">Create Account</button>
         </form>
@@ -103,7 +107,7 @@ export function renderRegisterView(uiManager) {
           Already have an account? <a href="#login">Login</a>
         </div>
       </div>
-    </div>
+    </main>
   `;
 
   document.getElementById('registerForm').addEventListener('submit', (e) => uiManager.handleRegister(e));
@@ -122,12 +126,12 @@ export function renderLoginView(uiManager) {
   uiManager.ensureCSS();
 
   document.body.innerHTML = `
-    <div class="auth-container">
+    <main class="auth-container" role="main">
       <div class="auth-card">
         <h1>Welcome Back</h1>
         <p class="subtitle">Login to Mini Notes</p>
 
-        <form id="loginForm" class="auth-form">
+        <form id="loginForm" class="auth-form" novalidate>
           <div class="form-group">
             <label for="email">Email</label>
             <input
@@ -135,6 +139,7 @@ export function renderLoginView(uiManager) {
               id="email"
               name="email"
               required
+              autocomplete="email"
               placeholder="you@example.com"
             >
           </div>
@@ -146,11 +151,12 @@ export function renderLoginView(uiManager) {
               id="password"
               name="password"
               required
+              autocomplete="current-password"
               placeholder="Your password"
             >
           </div>
 
-          <div id="loginError" class="error-message" style="display: none;"></div>
+          <div id="loginError" class="error-message" role="alert" aria-live="assertive" style="display: none;"></div>
 
           <button type="submit" class="btn btn-primary">Login</button>
         </form>
@@ -159,7 +165,7 @@ export function renderLoginView(uiManager) {
           Don't have an account? <a href="#register">Register</a>
         </div>
       </div>
-    </div>
+    </main>
   `;
 
   document.getElementById('loginForm').addEventListener('submit', (e) => uiManager.handleLogin(e));

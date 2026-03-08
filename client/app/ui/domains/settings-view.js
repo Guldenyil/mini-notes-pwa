@@ -10,12 +10,12 @@ export function renderSettingsView(uiManager) {
       <header class="app-header">
         <h1>Account Settings</h1>
         <div class="user-info">
-          <button id="backBtn" class="btn btn-secondary">← Back to Notes</button>
-          <button id="logoutBtn" class="btn btn-secondary">Logout</button>
+          <button id="backBtn" class="btn btn-secondary" aria-label="Back to notes">← Back to Notes</button>
+          <button id="logoutBtn" class="btn btn-secondary" aria-label="Logout">Logout</button>
         </div>
       </header>
 
-      <main class="app-main">
+      <main class="app-main" role="main">
         <div class="container settings-container">
 
           <section class="settings-section">
@@ -33,14 +33,14 @@ export function renderSettingsView(uiManager) {
 
           <section class="settings-section">
             <h2>Data Management</h2>
-            <button id="exportBtn" class="btn btn-primary">Export All Data</button>
+            <button id="exportBtn" class="btn btn-primary" aria-label="Export all account data">Export All Data</button>
             <p class="help-text">Download all your notes and account data in JSON format</p>
           </section>
 
           <section class="settings-section">
             <h2>Legal Documents</h2>
-            <button id="viewTosBtn" class="btn btn-secondary">View Terms of Service</button>
-            <button id="viewPrivacyBtn" class="btn btn-secondary">View Privacy Policy</button>
+            <button id="viewTosBtn" class="btn btn-secondary" aria-label="View terms of service">View Terms of Service</button>
+            <button id="viewPrivacyBtn" class="btn btn-secondary" aria-label="View privacy policy">View Privacy Policy</button>
             <p class="help-text">ToS Version: ${user.tosVersionAccepted || '1.0.0'}</p>
           </section>
 
@@ -50,7 +50,7 @@ export function renderSettingsView(uiManager) {
               Account deletion is permanent and cannot be undone.
               All your data will be permanently deleted within 48 hours.
             </p>
-            <button id="deleteAccountBtn" class="btn btn-danger">Delete Account</button>
+            <button id="deleteAccountBtn" class="btn btn-danger" aria-label="Delete account permanently">Delete Account</button>
           </section>
 
         </div>

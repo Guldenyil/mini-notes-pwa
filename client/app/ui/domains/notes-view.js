@@ -32,26 +32,30 @@ export async function renderMainApp(uiManager) {
           </div>
 
           <div class="notes-filters">
-            <input type="text" id="searchInput" placeholder="🔍 Search notes..." class="search-input">
+            <label for="searchInput" class="sr-only">Search notes</label>
+            <input type="text" id="searchInput" placeholder="🔍 Search notes..." class="search-input" aria-label="Search notes">
           </div>
 
-          <div id="notesGrid" class="notes-grid">
+          <div id="notesGrid" class="notes-grid" aria-live="polite">
             <div class="loading">Loading notes...</div>
           </div>
         </div>
       </main>
 
-      <div id="noteModal" class="modal" style="display: none;">
-        <div class="modal-content">
+      <div id="noteModal" class="modal" style="display: none;" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+        <div class="modal-content" tabindex="-1">
           <div class="modal-header">
             <h3 id="modalTitle">New Note</h3>
-            <button id="closeModal" class="close-btn">&times;</button>
+            <button id="closeModal" class="close-btn" aria-label="Close note editor">&times;</button>
           </div>
           <div class="modal-body">
-            <input type="text" id="noteTitle" placeholder="Note title" class="note-input">
-            <textarea id="noteContent" placeholder="Write your note here..." class="note-textarea"></textarea>
+            <label for="noteTitle" class="sr-only">Note title</label>
+            <input type="text" id="noteTitle" placeholder="Note title" class="note-input" aria-label="Note title">
+            <label for="noteContent" class="sr-only">Note content</label>
+            <textarea id="noteContent" placeholder="Write your note here..." class="note-textarea" aria-label="Note content"></textarea>
             <div class="note-options">
-              <input type="text" id="noteCategory" placeholder="Category (optional)" class="note-input-small">
+              <label for="noteCategory" class="sr-only">Note category</label>
+              <input type="text" id="noteCategory" placeholder="Category (optional)" class="note-input-small" aria-label="Note category">
               <label class="pin-label">
                 <input type="checkbox" id="notePinned"> 📌 Pin this note
               </label>
@@ -122,6 +126,7 @@ export function showNoteModal(uiManager, note = null) {
   }
 
   modal.style.display = 'flex';
+  noteTitle.focus();
 }
 
 export function hideNoteModal(uiManager) {
@@ -193,7 +198,7 @@ export function displayNotes(uiManager, notes) {
   }
 
   grid.innerHTML = notes.map((note) => `
-    <div class="note-card ${note.isPinned ? 'pinned' : ''}" data-id="${note.id}">
+    <article class="note-card ${note.isPinned ? 'pinned' : ''}" data-id="${note.id}" tabindex="0" role="button" aria-label="Open note ${escapeHtml(note.title)}">
       ${note.isPinned ? '<div class="pin-indicator">📌</div>' : ''}
       <h3 class="note-title">${escapeHtml(note.title)}</h3>
       <p class="note-content">${escapeHtml(note.content)}</p>
@@ -201,11 +206,11 @@ export function displayNotes(uiManager, notes) {
       <div class="note-footer">
         <span class="note-date">${new Date(note.createdAt).toLocaleDateString()}</span>
         <div class="note-actions">
-          <button class="btn-icon edit-note" data-id="${note.id}" title="Edit">✏️</button>
-          <button class="btn-icon delete-note" data-id="${note.id}" title="Delete">🗑️</button>
+          <button class="btn-icon edit-note" data-id="${note.id}" title="Edit" aria-label="Edit note ${escapeHtml(note.title)}">✏️</button>
+          <button class="btn-icon delete-note" data-id="${note.id}" title="Delete" aria-label="Delete note ${escapeHtml(note.title)}">🗑️</button>
         </div>
       </div>
-    </div>
+    </article>
   `).join('');
 
   document.querySelectorAll('.note-card').forEach((card) => {
@@ -216,6 +221,22 @@ export function displayNotes(uiManager, notes) {
 
       const noteId = parseInt(card.dataset.id, 10);
       const note = uiManager.notes.find((item) => item.id === noteId);
+      if (note) {
+        showNoteViewModal(uiManager, note);
+      }
+    });
+  });
+
+  document.querySelectorAll('.note-card').forEach((card) => {
+    card.addEventListener('keydown', (event) => {
+      if (event.key !== 'Enter' && event.key !== ' ') {
+        return;
+      }
+
+      event.preventDefault();
+      const noteId = parseInt(card.dataset.id, 10);
+      const note = uiManager.notes.find((item) => item.id === noteId);
+
       if (note) {
         showNoteViewModal(uiManager, note);
       }
@@ -246,10 +267,10 @@ export function showNoteViewModal(uiManager, note) {
   overlay.id = 'noteViewOverlay';
 
   overlay.innerHTML = `
-    <div class="modal-content note-view-modal">
+    <div class="modal-content note-view-modal" role="dialog" aria-modal="true" aria-label="View note" tabindex="-1">
       <div class="modal-header">
         <h2>${escapeHtml(note.title)}</h2>
-        <button class="btn-icon close-modal">✕</button>
+        <button class="btn-icon close-modal" aria-label="Close note">✕</button>
       </div>
       <div class="modal-body">
         <div class="note-view-content">${escapeHtml(note.content)}</div>
@@ -271,6 +292,7 @@ export function showNoteViewModal(uiManager, note) {
   `;
 
   document.body.appendChild(overlay);
+  overlay.querySelector('.note-view-modal').focus();
 
   overlay.querySelector('.close-modal').addEventListener('click', () => {
     hideNoteViewModal();
